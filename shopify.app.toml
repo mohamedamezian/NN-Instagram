@@ -2,7 +2,7 @@
 
 client_id = "a199ee26b60ef2e5fbfbb8f526c3b525"
 name = "NN-Instagram"
-application_url = "https://nn-instagram-dupe.vercel.app"
+application_url = "https://nn-instagram-dupe.vercel.app/"
 embedded = true
 
 [build]
