@@ -17,5 +17,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   
   const authUrl = `https://www.instagram.com/oauth/authorize?force_reauth=true&client_id=${appId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}&state=${state}`;
 
+  // Temporary debug mode: if the caller includes ?debug=1 we return the authUrl as plain text
+  // so you can copy the exact redirect_uri parameter (including encoding) without performing
+  // the redirect. This file change is local and will be reverted after debugging.
+  const debug = url.searchParams.get("debug") === "1";
+  if (debug) {
+    console.log("[debug] INSTAGRAM authUrl:", authUrl);
+    return new Response(authUrl, { status: 200, headers: { "Content-Type": "text/plain" } });
+  }
+
   return redirect(authUrl);
 };
