@@ -1,0 +1,1220 @@
+{% comment %} Instagram Feed {% endcomment %}
+{% assign lists = metaobjects['instagram-list']['instagram-feed-list'] %}
+
+<header>
+  <h2>Instagram Feed</h2>
+</header>
+<section class="instagram-feed">
+  <div class="scroll-left" role="button" aria-label="Scroll left" tabindex="0">
+    <svg class="arrow-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z" />
+    </svg>
+  </div>
+  <div class="fade-left" aria-hidden="true"></div>
+  {% for post in lists.posts.value %}
+    <div
+      class="instagram-card"
+      data-index="{{ forloop.index0 }}"
+    >
+      {% for media in post.images.value limit: 1 %}
+        {% if media.sources %}
+          {{ media | video_tag: autoplay: true, loop: true, muted: true, class: 'instagram-video' }}
+        {% else %}
+          <img
+            class="instagram-image"
+            src="{{ media | image_url: width: 800, height: 1200, crop: 'center' }}"
+            width="320"
+            height="480"
+            alt="Instagram Post Image"
+          >
+        {% endif %}
+      {% endfor %}
+      <div class="overlay">
+        <div class="stats">
+          <span class="likes">
+            {{ post.likes.value }}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              version="1.1"
+              width="20"
+              height="20"
+              viewBox="0 0 256 256"
+              xml:space="preserve"
+            >
+              <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
+              	<path d="M 7.486 13.502 c 9.982 -9.982 26.165 -9.982 36.147 0 L 45 14.869 l 0 0 c 6.895 22.882 6.259 47.092 0 72.294 L 26.927 69.089 c 0 0 0 0 0 0 l -19.44 -19.44 C -2.495 39.667 -2.495 23.484 7.486 13.502 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgba(255, 255, 255, 1); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
+              	<path d="M 82.514 13.502 c -9.982 -9.982 -26.165 -9.982 -36.147 0 L 45 14.869 l 0 0 v 72.294 l 18.073 -18.073 c 0 0 0 0 0 0 l 19.44 -19.44 C 92.495 39.667 92.495 23.484 82.514 13.502 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgba(255, 255, 255, 1); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
+              </g>
+            </svg>
+          </span>
+          <span class="comments">
+            {{ post.comments.value }}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              version="1.1"
+              width="20"
+              height="20"
+              viewBox="0 0 256 256"
+              xml:space="preserve"
+            >
+              <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
+              	<path d="M 86.999 90 c -0.367 0 -0.737 -0.067 -1.092 -0.206 l -17.016 -6.655 C 61.734 87.633 53.509 90 45 90 C 20.187 90 0 69.813 0 45 C 0 20.187 20.187 0 45 0 c 24.813 0 45 20.187 45 45 c 0 8.509 -2.367 16.734 -6.861 23.892 l 6.655 17.016 c 0.434 1.11 0.17 2.371 -0.673 3.214 C 88.548 89.694 87.78 90 86.999 90 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
+              </g>
+            </svg>
+          </span>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+  <div class="scroll-right" role="button" aria-label="Scroll right" tabindex="0">
+    <svg class="arrow-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" />
+    </svg>
+  </div>
+  <div class="fade-right" aria-hidden="true"></div>
+</section>
+<footer>
+  <h4>@{{ lists.username }}</h4>
+</footer>
+
+<div class="modal" aria-hidden="true">
+  <div class="modal-posts-container">
+    {% for post in lists.posts.value %}
+      <div class="modal-post" data-post-index="{{ forloop.index0 }}">
+        <!-- Header with username -->
+        <div class="modal-header">
+          <div class="modal-username">@{{ lists.username }}</div>
+        </div>
+
+        <!-- Image container with navigation -->
+        <div class="modal-images-container">
+          <!-- Close button (inside image) -->
+          <button class="close-button" aria-label="Close">&times;</button>
+
+          <!-- Navigation arrows for image carousel (inside image) -->
+          <button class="modal-nav modal-nav-prev" aria-label="Previous image">
+            <svg viewBox="0 0 24 24" width="24" height="24">
+              <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z" fill="white" />
+            </svg>
+          </button>
+
+          <button class="modal-nav modal-nav-next" aria-label="Next image">
+            <svg viewBox="0 0 24 24" width="24" height="24">
+              <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="white" />
+            </svg>
+          </button>
+
+          {% for media in post.images.value %}
+            <div class="modal-slide" data-slide-index="{{ forloop.index0 }}">
+              {% if media.sources %}
+                <video class="modal-media" controls playsinline>
+                  {% for source in media.sources %}
+                    <source src="{{ source.url }}" type="{{ source.mime_type }}">
+                  {% endfor %}
+                </video>
+              {% else %}
+                <img
+                  class="modal-media"
+                  src="{{ media | image_url: width: 1200 }}"
+                  alt="Instagram post {{ forloop.index }}"
+                  width="1200"
+                  height="1200"
+                >
+              {% endif %}
+            </div>
+          {% endfor %}
+
+          <!-- Image indicators (dots) -->
+          {% if post.images.value.size > 1 %}
+            <div class="modal-indicators">
+              {% for media in post.images.value %}
+                <div class="indicator-dot" data-indicator-index="{{ forloop.index0 }}"></div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Details box below image -->
+        <div class="details-box">
+          <div class="post-stats-row">
+            <span class="stat-item">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+              </svg>
+              {{ post.likes.value }}
+            </span>
+            <span class="stat-item">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+              </svg>
+              {{ post.comments.value }}
+            </span>
+          </div>
+          <div class="post-caption">
+            <strong>@{{ lists.username }}</strong> {{ post.caption.value }}
+          </div>
+        </div>
+
+        <!-- Post navigation footer -->
+        <div class="modal-footer">
+          <button class="footer-nav footer-nav-prev" aria-label="Previous post">&lt; Post</button>
+          <div class="post-counter">
+            <span class="current-post">{{ forloop.index }}</span> / {{ lists.posts.value.size }}
+          </div>
+          <button class="footer-nav footer-nav-next" aria-label="Next post">Next Post &gt;</button>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  // Minimal JavaScript - just handles visibility and navigation
+  (function () {
+    const modal = document.querySelector('.modal');
+
+    if (!modal) return;
+
+    let currentPostIndex = 0;
+    let currentImageIndex = 0;
+    let currentPost = null;
+    let prevImageBtn = null;
+    let nextImageBtn = null;
+    let closeBtn = null;
+    let prevPostBtn = null;
+    let nextPostBtn = null;
+    let postCounter = null;
+
+    function showCurrentPost(direction = 0) {
+      const allPosts = modal.querySelectorAll('.modal-post');
+      
+      // FIRST: Instantly hide all posts and reset their state
+      allPosts.forEach((post) => {
+        post.style.transition = 'none';
+        post.style.display = 'none';
+        post.style.transform = 'none';
+        post.style.opacity = '0';
+      });
+
+      // SECOND: Get the current post and prepare it
+      currentPost = allPosts[currentPostIndex];
+      if (!currentPost) return;
+
+      currentImageIndex = 0;
+
+      // Get navigation buttons for current post
+      prevImageBtn = currentPost.querySelector('.modal-nav-prev');
+      nextImageBtn = currentPost.querySelector('.modal-nav-next');
+      closeBtn = currentPost.querySelector('.close-button');
+      prevPostBtn = currentPost.querySelector('.footer-nav-prev');
+      nextPostBtn = currentPost.querySelector('.footer-nav-next');
+      postCounter = currentPost.querySelector('.post-counter');
+
+      // Show the post
+      currentPost.style.display = 'block';
+
+      if (direction !== 0) {
+        // Set starting position for animation
+        currentPost.style.transform = `translateX(${direction > 0 ? '8%' : '-8%'})`;
+        currentPost.style.opacity = '0';
+        
+        // Force browser to apply these styles
+        void currentPost.offsetHeight;
+        
+        // Animate to final position
+        requestAnimationFrame(() => {
+          currentPost.style.transition = 'transform 0.25s ease-out, opacity 0.25s ease-out';
+          currentPost.style.transform = 'none';
+          currentPost.style.opacity = '1';
+        });
+      } else {
+        // No animation - just show immediately
+        currentPost.style.transform = 'none';
+        currentPost.style.opacity = '1';
+      }
+
+      showCurrentImage();
+      updateNavButtons();
+    }
+
+    function showCurrentImage(direction = 0) {
+      if (!currentPost) return;
+
+      const slides = currentPost.querySelectorAll('.modal-slide');
+      const dots = currentPost.querySelectorAll('.indicator-dot');
+
+      // FIRST: Instantly hide all slides and reset their state
+      slides.forEach((slide) => {
+        slide.style.transition = 'none';
+        slide.style.display = 'none';
+        slide.style.transform = 'none';
+        slide.style.opacity = '0';
+      });
+
+      // SECOND: Get the current slide and prepare it
+      const currentSlide = slides[currentImageIndex];
+      if (!currentSlide) return;
+
+      // Show the slide
+      currentSlide.style.display = 'block';
+
+      if (direction !== 0) {
+        // Set starting position for animation
+        currentSlide.style.transform = `translateX(${direction > 0 ? '8%' : '-8%'})`;
+        currentSlide.style.opacity = '0';
+        
+        // Force browser to apply these styles
+        void currentSlide.offsetHeight;
+        
+        // Animate to final position
+        requestAnimationFrame(() => {
+          currentSlide.style.transition = 'transform 0.25s ease-out, opacity 0.25s ease-out';
+          currentSlide.style.transform = 'none';
+          currentSlide.style.opacity = '1';
+        });
+      } else {
+        // No animation - just show immediately
+        currentSlide.style.transform = 'none';
+        currentSlide.style.opacity = '1';
+      }
+
+      // Update dots
+      dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentImageIndex);
+      });
+    }
+
+    function updateNavButtons() {
+      const allPosts = modal.querySelectorAll('.modal-post');
+      const slides = currentPost ? currentPost.querySelectorAll('.modal-slide') : [];
+
+      // Image navigation
+      if (prevImageBtn) {
+        prevImageBtn.style.display = slides.length > 1 && currentImageIndex > 0 ? 'flex' : 'none';
+      }
+      if (nextImageBtn) {
+        nextImageBtn.style.display = slides.length > 1 && currentImageIndex < slides.length - 1 ? 'flex' : 'none';
+      }
+
+      // Post navigation
+      if (prevPostBtn) {
+        prevPostBtn.disabled = currentPostIndex === 0;
+      }
+      if (nextPostBtn) {
+        nextPostBtn.disabled = currentPostIndex === allPosts.length - 1;
+      }
+    }
+
+    function openModal(postIndex) {
+      currentPostIndex = postIndex;
+      showCurrentPost();
+      modal.style.display = 'flex';
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    // Card clicks
+    document.querySelectorAll('.instagram-card').forEach((card, index) => {
+      card.addEventListener('click', (e) => {
+        e.preventDefault();
+        openModal(index);
+      });
+    });
+
+    // Image navigation - use event delegation on modal
+    modal.addEventListener('click', (e) => {
+      // Close button
+      const closeTarget = e.target.closest('.close-button');
+      if (closeTarget) {
+        e.stopPropagation();
+        closeModal();
+        return;
+      }
+
+      // Image nav prev
+      const target = e.target.closest('.modal-nav-prev');
+      if (target && currentImageIndex > 0) {
+        e.stopPropagation();
+        currentImageIndex--;
+        showCurrentImage(1); // direction: 1 = right
+        updateNavButtons();
+        return;
+      }
+
+      // Image nav next
+      const nextTarget = e.target.closest('.modal-nav-next');
+      if (nextTarget) {
+        e.stopPropagation();
+        const slides = currentPost.querySelectorAll('.modal-slide');
+        if (currentImageIndex < slides.length - 1) {
+          currentImageIndex++;
+          showCurrentImage(-1); // direction: -1 = left
+          updateNavButtons();
+        }
+        return;
+      }
+
+      // Post nav prev
+      const prevPost = e.target.closest('.footer-nav-prev');
+      if (prevPost && !prevPost.disabled) {
+        e.stopPropagation();
+        if (currentPostIndex > 0) {
+          currentPostIndex--;
+          showCurrentPost(1); // direction: 1 = right (previous)
+        }
+        return;
+      }
+
+      // Post nav next
+      const nextPost = e.target.closest('.footer-nav-next');
+      if (nextPost && !nextPost.disabled) {
+        e.stopPropagation();
+        const allPosts = modal.querySelectorAll('.modal-post');
+        if (currentPostIndex < allPosts.length - 1) {
+          currentPostIndex++;
+          showCurrentPost(-1); // direction: -1 = left (next)
+        }
+        return;
+      }
+
+      // Close on backdrop click
+      if (e.target === modal) closeModal();
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (modal.style.display === 'none') return;
+
+      if (e.key === 'Escape') {
+        closeModal();
+      } else if (e.key === 'ArrowLeft' && currentImageIndex > 0) {
+        currentImageIndex--;
+        showCurrentImage(1);
+        updateNavButtons();
+      } else if (e.key === 'ArrowRight') {
+        const slides = currentPost.querySelectorAll('.modal-slide');
+        if (currentImageIndex < slides.length - 1) {
+          currentImageIndex++;
+          showCurrentImage(-1);
+          updateNavButtons();
+        }
+      }
+    });
+
+    // Add swipe/drag functionality to modal images
+    let isDragging = false;
+    let dragStartX = 0;
+
+    modal.addEventListener('mousedown', (e) => {
+      // Only start drag on the image container
+      if (!e.target.closest('.modal-images-container')) return;
+      // Don't interfere with buttons
+      if (e.target.closest('.close-button, .modal-nav')) return;
+
+      isDragging = true;
+      dragStartX = e.pageX;
+      let hasMoved = false;
+      const currentSlide = currentPost.querySelector('.modal-slide[style*="display: block"]');
+
+      // Remove transitions during drag for immediate feedback
+      if (currentSlide) {
+        currentSlide.style.transition = 'none';
+      }
+
+      const handleMouseMove = (moveEvent) => {
+        if (!isDragging) return;
+        const diff = moveEvent.pageX - dragStartX;
+
+        if (Math.abs(diff) > 10) {
+          hasMoved = true;
+          // Add visual feedback during drag with reduced movement
+          if (currentSlide) {
+            const translateAmount = diff * 0.3; // Reduced from 0.5 for subtler feedback
+            const opacityValue = Math.max(0.6, 1 - Math.abs(diff) / 800); // More subtle fade
+            currentSlide.style.transform = `translateX(${translateAmount}px)`;
+            currentSlide.style.opacity = `${opacityValue}`;
+          }
+        }
+      };
+
+      const handleMouseUp = (upEvent) => {
+        isDragging = false;
+        const diff = upEvent.pageX - dragStartX;
+
+        // Determine if we're navigating
+        const shouldNavigate = hasMoved && Math.abs(diff) > 50;
+
+        if (!shouldNavigate) {
+          // Just reset if no navigation
+          if (currentSlide) {
+            currentSlide.style.transition = 'transform 0.25s ease-out, opacity 0.25s ease-out';
+            currentSlide.style.transform = 'translateX(0)';
+            currentSlide.style.opacity = '1';
+          }
+        } else {
+          const allPosts = modal.querySelectorAll('.modal-post');
+          const slides = currentPost.querySelectorAll('.modal-slide');
+
+          if (diff > 0) {
+            // Swipe right (go to previous)
+            if (currentImageIndex > 0) {
+              currentImageIndex--;
+              showCurrentImage(1);
+              updateNavButtons();
+            } else if (currentPostIndex > 0) {
+              // Go to previous post
+              currentPostIndex--;
+              showCurrentPost(1); // direction: 1 = right (previous)
+            } else {
+              // Can't go back further, reset
+              if (currentSlide) {
+                currentSlide.style.transition = 'transform 0.25s ease-out, opacity 0.25s ease-out';
+                currentSlide.style.transform = 'translateX(0)';
+                currentSlide.style.opacity = '1';
+              }
+            }
+          } else {
+            // Swipe left (go to next)
+            if (currentImageIndex < slides.length - 1) {
+              currentImageIndex++;
+              showCurrentImage(-1);
+              updateNavButtons();
+            } else if (currentPostIndex < allPosts.length - 1) {
+              // Go to next post
+              currentPostIndex++;
+              showCurrentPost(-1); // direction: -1 = left (next)
+            } else {
+              // Can't go forward further, reset
+              if (currentSlide) {
+                currentSlide.style.transition = 'transform 0.25s ease-out, opacity 0.25s ease-out';
+                currentSlide.style.transform = 'translateX(0)';
+                currentSlide.style.opacity = '1';
+              }
+            }
+          }
+        }
+
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    });
+
+    // Add touch swipe support for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    modal.addEventListener(
+      'touchstart',
+      (e) => {
+        if (!e.target.closest('.modal-images-container')) return;
+        if (e.target.closest('.close-button, .modal-nav')) return;
+        touchStartX = e.changedTouches[0].screenX;
+      },
+      { passive: true }
+    );
+
+    modal.addEventListener(
+      'touchend',
+      (e) => {
+        if (!e.target.closest('.modal-images-container')) return;
+        if (e.target.closest('.close-button, .modal-nav')) return;
+
+        touchEndX = e.changedTouches[0].screenX;
+        const diff = touchEndX - touchStartX;
+
+        if (Math.abs(diff) > 50) {
+          const allPosts = modal.querySelectorAll('.modal-post');
+          const slides = currentPost.querySelectorAll('.modal-slide');
+
+          if (diff > 0) {
+            // Swipe right (go to previous)
+            if (currentImageIndex > 0) {
+              currentImageIndex--;
+              showCurrentImage(1);
+              updateNavButtons();
+            } else if (currentPostIndex > 0) {
+              // Go to previous post
+              currentPostIndex--;
+              showCurrentPost(1); // direction: 1 = right (previous)
+            }
+          } else {
+            // Swipe left (go to next)
+            if (currentImageIndex < slides.length - 1) {
+              currentImageIndex++;
+              showCurrentImage(-1);
+              updateNavButtons();
+            } else if (currentPostIndex < allPosts.length - 1) {
+              // Go to next post
+              currentPostIndex++;
+              showCurrentPost(-1); // direction: -1 = left (next)
+            }
+          }
+        }
+      },
+      { passive: true }
+    );
+  })();
+
+  // video click to toggle play/pause
+  document.querySelectorAll('.instagram-video').forEach((video) => {
+    video.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.paused ? this.play() : this.pause();
+    });
+  });
+
+  // scroll controls: click or Enter/Space to scroll the feed by one card
+  (function () {
+    const leftBtns = document.querySelectorAll('.scroll-left');
+    const rightBtns = document.querySelectorAll('.scroll-right');
+
+    function cardScrollAmount(container) {
+      const card = container.querySelector('.instagram-card');
+      if (!card) return Math.round(container.clientWidth * 0.6);
+      const gap = parseFloat(getComputedStyle(container).gap || 16);
+      return Math.round(card.offsetWidth + gap);
+    }
+
+    function attach(btns, dir) {
+      btns.forEach((btn) => {
+        const container = btn.closest('.instagram-feed');
+        if (!container) return;
+        btn.addEventListener('click', () => {
+          container.scrollBy({ left: dir * cardScrollAmount(container), behavior: 'smooth' });
+        });
+        btn.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            btn.click();
+          }
+        });
+      });
+    }
+
+    attach(leftBtns, -1);
+    attach(rightBtns, 1);
+
+    // Add swipe/drag functionality to feed
+    document.querySelectorAll('.instagram-feed').forEach((container) => {
+      let isDown = false;
+      let startX;
+      let scrollLeft;
+      let hasMoved = false;
+
+      container.addEventListener('mousedown', (e) => {
+        // Don't interfere with button clicks
+        if (e.target.closest('.scroll-left, .scroll-right')) return;
+
+        isDown = true;
+        hasMoved = false;
+        container.style.cursor = 'grabbing';
+        container.style.userSelect = 'none';
+        startX = e.pageX - container.offsetLeft;
+        scrollLeft = container.scrollLeft;
+
+        // Prevent default drag behavior on images
+        e.preventDefault();
+      });
+
+      container.addEventListener('mouseleave', () => {
+        isDown = false;
+        container.style.cursor = 'grab';
+        container.style.userSelect = '';
+      });
+
+      container.addEventListener('mouseup', () => {
+        isDown = false;
+        container.style.cursor = 'grab';
+        container.style.userSelect = '';
+      });
+
+      container.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - container.offsetLeft;
+        const walk = (x - startX) * 1; // Reduced scroll speed for smoother control
+
+        // If moved more than 5 pixels, it's a drag not a click
+        if (Math.abs(walk) > 5) {
+          hasMoved = true;
+        }
+
+        container.scrollLeft = scrollLeft - walk;
+      });
+
+      // Prevent card click if user was dragging
+      container.addEventListener(
+        'click',
+        (e) => {
+          if (hasMoved) {
+            e.preventDefault();
+            e.stopPropagation();
+            hasMoved = false;
+          }
+        },
+        true
+      );
+    });
+
+    // show/hide arrows and fades based on overflow and scroll position
+    function refreshHints() {
+      const containers = document.querySelectorAll('.instagram-feed');
+      containers.forEach((container) => {
+        const left = container.querySelector('.scroll-left');
+        const right = container.querySelector('.scroll-right');
+        const fadeL = container.querySelector('.fade-left');
+        const fadeR = container.querySelector('.fade-right');
+        if (!left || !right) return;
+        const canScroll = container.scrollWidth > container.clientWidth + 1;
+        if (!canScroll) {
+          left.style.display = 'none';
+          right.style.display = 'none';
+          fadeL && fadeL.classList.remove('fade-visible');
+          fadeR && fadeR.classList.remove('fade-visible');
+          return;
+        }
+        // Show/hide arrows based on scroll position
+        const scrollLeft = container.scrollLeft;
+        const maxScroll = container.scrollWidth - container.clientWidth - 1;
+
+        // Hide left arrow if at the start
+        left.style.display = scrollLeft <= 1 ? 'none' : '';
+
+        // Hide right arrow if at the end
+        right.style.display = scrollLeft >= maxScroll - 1 ? 'none' : '';
+
+        if (fadeL) fadeL.classList.toggle('fade-visible', scrollLeft > 8);
+        if (fadeR) fadeR.classList.toggle('fade-visible', scrollLeft < maxScroll - 8);
+      });
+    }
+
+    // attach events
+    window.addEventListener('resize', refreshHints);
+    document
+      .querySelectorAll('.instagram-feed')
+      .forEach((c) => c.addEventListener('scroll', refreshHints, { passive: true }));
+    // initial call
+    setTimeout(refreshHints, 120);
+  })();
+</script>
+
+<style>
+  header {
+  }
+
+  .instagram-feed {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    gap: 2em;
+    cursor: grab;
+    -webkit-overflow-scrolling: touch;
+  }
+  .instagram-feed::-webkit-scrollbar {
+    /* WebKit */
+    width: 0;
+    height: 0;
+  }
+
+  .instagram-card {
+    position: relative;
+    flex: 0 0 auto;
+    aspect-ratio: 4 / 6;
+    cursor: pointer;
+  }
+  .overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    background: rgba(0, 0, 0, 0.7);
+    pointer-events: none;
+    transition: opacity 240ms ease, transform 240ms ease;
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .instagram-card:hover .overlay {
+    opacity: 1;
+  }
+
+  .stats {
+    display: inline-flex;
+    gap: 0.6rem;
+    align-items: center;
+    font-size: 0.95rem;
+    color: #fff;
+  }
+  .likes,
+  .comments {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    color: white;
+  }
+
+  .caption {
+    color: #fff;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    margin: 0;
+    font-size: 0.95rem;
+  }
+
+  /* allow overlay children to be interactive while the overlay itself stays non-blocking */
+  .overlay > * {
+    pointer-events: auto;
+  }
+
+  /* media inside card */
+  .instagram-image,
+  .instagram-video {
+    width: 320px;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 24px;
+    display: block;
+    background: #111;
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
+  }
+
+  /* scroll button visuals */
+  .scroll-left,
+  .scroll-right {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  }
+  .scroll-left {
+    left: 8px;
+  }
+  .scroll-right {
+    right: 8px;
+  }
+
+  .arrow-icon {
+    width: 18px;
+    height: 18px;
+    fill: #fff;
+  }
+
+  /* hide on small screens where touch scrolling is primary */
+  @media (max-width: 680px) {
+    .scroll-left,
+    .scroll-right {
+      display: none;
+    }
+  }
+
+  /* arrow hover animation */
+  .scroll-left:hover,
+  .scroll-right:hover {
+    transform: translateY(-50%) scale(1.03);
+  }
+
+  /* fade hints at edges */
+  .fade-left,
+  .fade-right {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 3.5rem;
+    pointer-events: none;
+    z-index: 5;
+    transition: opacity 180ms ease;
+    opacity: 0;
+  }
+  .fade-left {
+    left: 0;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0));
+  }
+  .fade-right {
+    right: 0;
+    background: linear-gradient(270deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0));
+  }
+
+  .fade-visible {
+    opacity: 1;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-posts-container {
+    position: relative;
+    max-width: 600px;
+    max-height: calc(100vh - 80px);
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-post {
+    display: none;
+    position: relative;
+    max-height: calc(100vh - 80px);
+    width: 100%;
+    max-width: 600px;
+    background: #000;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Modal header with username */
+  .modal-header {
+    background: rgba(0, 0, 0, 0.9);
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .modal-username {
+    color: #fff;
+    font-weight: 600;
+    font-size: 16px;
+  }
+
+  .modal-images-container {
+    position: relative;
+    max-height: calc(100vh - 340px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: #000;
+  }
+
+  .modal-slide {
+    display: none;
+    opacity: 0;
+  }
+
+  .modal-media {
+    max-height: calc(100vh - 340px);
+    max-width: 600px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
+  }
+
+  /* Ensure videos match image sizing */
+  video.modal-media {
+    max-height: calc(100vh - 340px);
+    max-width: 600px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: auto; /* Allow video controls */
+  }
+
+  .close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.5);
+    border: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 32px;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .close-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  /* Image navigation arrows (within post) */
+  .modal-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 30;
+    background: rgba(0, 0, 0, 0.6);
+    border: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .modal-nav:hover {
+    background: rgba(0, 0, 0, 0.8);
+  }
+
+  .modal-nav-prev {
+    left: 20px;
+  }
+
+  .modal-nav-next {
+    right: 20px;
+  }
+
+  /* Image indicators (dots) */
+  .modal-indicators {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 25;
+  }
+
+  .indicator-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+
+  .indicator-dot.active {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.15);
+  }
+
+  /* Details box below image */
+  .details-box {
+    background: rgba(0, 0, 0, 0.9);
+    padding: 16px 20px;
+    color: #fff;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .post-stats-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 12px;
+  }
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .stat-item svg {
+    color: #fff;
+  }
+
+  .post-caption {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #fff;
+    max-height: 60px;
+    overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+
+  .post-caption::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+
+  .post-caption strong {
+    font-weight: 600;
+  }
+
+  /* Modal footer with post navigation */
+  .modal-footer {
+    background: rgba(0, 0, 0, 0.9);
+    padding: 12px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-nav {
+    background: transparent;
+    border: 0;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 8px 12px;
+    transition: opacity 0.2s;
+  }
+
+  .footer-nav:hover {
+    opacity: 0.7;
+  }
+
+  .footer-nav:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .post-counter {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+  }
+
+  .current-post {
+    color: #fff;
+    font-weight: 600;
+  }
+
+  /* Remove old list-nav styles */
+  .list-nav {
+    display: none;
+  }
+
+  /* Mobile responsive */
+  @media (max-width: 768px) {
+    .modal-posts-container {
+      max-width: 100%;
+      max-height: calc(100vh - 40px);
+      margin-top: 20px;
+    }
+
+    .modal-post {
+      max-height: calc(100vh - 40px);
+      max-width: 100%;
+    }
+
+    .modal-header {
+      padding: 12px 16px;
+    }
+
+    .modal-username {
+      font-size: 14px;
+    }
+
+    .modal-images-container {
+      max-height: calc(100vh - 260px);
+    }
+
+    .modal-media {
+      max-height: calc(100vh - 260px);
+      max-width: 100%;
+    }
+
+    video.modal-media {
+      max-height: calc(100vh - 260px);
+      max-width: 100%;
+    }
+
+    .close-button {
+      top: 16px;
+      right: 16px;
+      width: 36px;
+      height: 36px;
+      font-size: 28px;
+    }
+
+    .modal-nav {
+      width: 40px;
+      height: 40px;
+    }
+
+    .modal-nav-prev {
+      left: 10px;
+    }
+
+    .modal-nav-next {
+      right: 10px;
+    }
+
+    .details-box {
+      padding: 12px 16px;
+    }
+
+    .post-stats-row {
+      margin-bottom: 8px;
+    }
+
+    .post-caption {
+      font-size: 13px;
+    }
+
+    .modal-footer {
+      padding: 10px 16px;
+    }
+
+    .footer-nav {
+      font-size: 13px;
+      padding: 6px 8px;
+    }
+
+    .post-counter {
+      font-size: 13px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Instagram Feed",
+  "target": "section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "posts_limit",
+      "label": "Number of posts",
+      "min": 4,
+      "max": 24,
+      "step": 1,
+      "default": 12
+    }
+  ]
+}
+{% endschema %}

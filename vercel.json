@@ -1,0 +1,10 @@
+{
+  "installCommand": "npm install --legacy-peer-deps",
+  "buildCommand": "npx prisma generate && npm run build",
+  "crons": [
+    {
+      "path": "/api/cron/refresh",
+      "schedule": "0 0 * * *"
+    }
+  ]
+}
