@@ -1,371 +1,693 @@
-# Shopify App Template - Remix
+# NN Instagram
 
-This is a template for building a [Shopify app](https://shopify.dev/docs/apps/getting-started) using the [Remix](https://remix.run) framework.
+An Instagram feed integration app, built the Near Native way.
 
-Rather than cloning this repo, you can use your preferred package manager and the Shopify CLI with [these steps](https://shopify.dev/docs/apps/getting-started/create).
+## Overview
 
-Visit the [`shopify.dev` documentation](https://shopify.dev/docs/api/shopify-app-remix) for more details on the Remix app package.
+NN Instagram is a Shopify app that syncs your Instagram Business feed and stores it as native Shopify metaobjects and files. This approach ensures:
 
-## Quick start
+- **Data ownership**: All Instagram posts are stored in the merchant's shop, accessible via the Shopify Admin
+- **Liquid accessibility**: Posts can be queried and displayed directly in theme templates using Liquid
+- **Design flexibility**: No widget limitations - style your Instagram feed however you want
+- **Performance**: Images uploaded to Shopify Files CDN for fast loading
+- **Portability**: Data stays in Shopify's standard format, no vendor lock-in
+
+## Scope and Goals
+
+The app offers seamless Instagram integration where:
+
+- Posts are stored in `nn_instagram_post` metaobjects
+- Feed configuration is stored in `nn_instagram_list` metaobjects
+- Images and videos are uploaded to Shopify Files for CDN delivery
+- Manual sync keeps content up-to-date
+- OAuth with Instagram Business API ensures secure, long-lived access
+
+## Technical Stack
+
+- **Framework**: React Router v7.9.3
+- **Database**: Prisma + PostgreSQL (Prisma Accelerate)
+- **Language**: TypeScript
+- **UI**: Shopify Polaris
+- **API**: Instagram Business API
+- **Deployment**: Vercel
+- **Based on**: [Shopify App Template - React Router](https://github.com/Shopify/shopify-app-template-react-router)
+
+## Installation & Setup
+
+### 1. Install the App
+
+Install NN Instagram from the Shopify App Store or via your partner dashboard.
+
+### 2. Connect Your Instagram Account
+
+1. Open the app from **Apps > NN Instagram** in your Shopify admin
+2. Click **Connect Instagram Account**
+3. Log in with your Instagram Business or Creator account
+4. Authorize the app to access your Instagram Business account
+5. You'll be redirected back to the dashboard
+
+### 3. Sync Your Feed
+
+1. Click **Sync Instagram Posts** to import your Instagram content
+2. The app will:
+   - Fetch your recent posts from Instagram
+   - Upload images/videos to Shopify Files
+   - Create metaobjects for each post
+   - Store captions, likes, and comment counts
+
+### 4. Add Feed to Your Theme
+
+The app includes a **Theme App Extension block** that you can add to any page:
+
+1. Go to **Online Store > Themes** in your Shopify admin
+2. Click **Customize** on your active theme
+3. Navigate to any page (homepage, product page, etc.)
+4. Click **Add block** or **Add section**
+5. Look for **NN Instagram Feed** in the Apps section
+6. Add the block and customize settings:
+   - Number of posts to display (1-50)
+   - Aspect ratio (portrait or square)
+   - Border radius (0-48px)
+   - Gap between posts (0-64px)
+   - Padding (top/bottom, left/right)
+   - Show/hide profile header
+   - Show/hide Instagram handle
+
+### 5. Customize the Display
+
+Each setting is fully customizable:
+
+- **Via Theme Editor**: Adjust all visual settings in real-time
+- **Via Code**: Edit the Liquid file in `extensions/instagram-feed/blocks/instagram-carousel.liquid` for complete HTML/CSS control
+- **Via Theme CSS**: Override styles using the `.nn-instagram-*` CSS classes
+
+## Development
 
 ### Prerequisites
 
-Before you begin, you'll need the following:
+1. **Node.js**: ≥ 20.19 or ≥ 22.12 - [Download](https://nodejs.org/)
+2. **Shopify Partner Account**: [Create an account](https://partners.shopify.com/signup)
+3. **Test Store**: Set up a [development store](https://help.shopify.com/en/partners/dashboard/development-stores#create-a-development-store)
+4. **Instagram Business Account**: Required for API access
+5. **PostgreSQL Database**: For production (Prisma Accelerate recommended)
 
-1. **Node.js**: [Download and install](https://nodejs.org/en/download/) it if you haven't already.
-2. **Shopify Partner Account**: [Create an account](https://partners.shopify.com/signup) if you don't have one.
-3. **Test Store**: Set up either a [development store](https://help.shopify.com/en/partners/dashboard/development-stores#create-a-development-store) or a [Shopify Plus sandbox store](https://help.shopify.com/en/partners/dashboard/managing-stores/plus-sandbox-store) for testing your app.
+### Environment Variables
 
-### Setup
+Create a `.env` file in the root directory:
 
-If you used the CLI to create the template, you can skip this section.
+```bash
+# Shopify App Configuration
+SHOPIFY_API_KEY="your_shopify_api_key"
+SHOPIFY_API_SECRET="your_shopify_api_secret"
 
-Using yarn:
+# Instagram Business API
+INSTAGRAM_APP_ID="848980354519999"
+INSTAGRAM_APP_SECRET="your_instagram_app_secret"
+INSTAGRAM_REDIRECT_URI="https://nn-instagram.vercel.app/instagram/callback"
+INSTA_SCOPES="instagram_business_basic,instagram_business_manage_messages,instagram_business_manage_comments,instagram_business_content_publish,instagram_business_manage_insights"
 
-```shell
-yarn install
-```
+# Database (Prisma Accelerate)
+DATABASE_URL="your_prisma_accelerate_connection_string"
 
-Using npm:
-
-```shell
-npm install
-```
-
-Using pnpm:
-
-```shell
-pnpm install
+# Shopify Scopes
+SCOPES="read_metaobjects,write_files,write_metaobject_definitions,write_metaobjects,write_themes"
 ```
 
 ### Local Development
 
-Using yarn:
-
 ```shell
-yarn dev
+npm install
+npm run setup  # Initialize Prisma
+shopify app dev
 ```
 
-Using npm:
+Press **P** to open the URL to your app. Once you click install, you can start development.
 
-```shell
-npm run dev
+## Usage
+
+### Merchant Workflow
+
+1. **Connect Instagram**
+   - Authenticate with Instagram Business API
+   - App receives a 60-day long-lived access token
+
+2. **Sync Posts**
+   - Manual sync imports recent posts
+   - Images/videos uploaded to Shopify Files
+   - Metaobjects created for each post
+   - Engagement data (likes, comments) stored
+
+3. **Configure Display**
+   - Use the real-time preview in the dashboard
+   - Adjust visual settings (layout, spacing, colors)
+   - See changes instantly before applying to theme
+
+4. **Add to Storefront**
+   - Install app block via theme editor
+   - Choose pages to display the feed
+   - Customize per-page if needed
+
+5. **Manage Connection**
+   - Disconnect removes all synced data
+   - Reconnect to sync again
+   - Data is fully portable (stored in Shopify)
+
+### Displaying Instagram Feed in Liquid
+
+Access Instagram post data directly in your theme templates:
+
+#### Display Instagram Grid
+
+```liquid
+{% assign instagram_list = shop.metaobjects.nn_instagram_list.values | first %}
+
+{% if instagram_list %}
+  {% assign instagram_posts = instagram_list.posts.value %}
+
+  <div class="instagram-feed">
+    <h2>Follow us on Instagram</h2>
+
+    <div class="instagram-grid">
+      {% for post_ref in instagram_posts limit: 12 %}
+        {% assign post = post_ref %}
+        {% assign post_data = post.data.value | parse_json %}
+
+        <div class="instagram-post">
+          {% if post.images.value.size > 0 %}
+            {% assign first_image = post.images.value.first %}
+            <img
+              src="{{ first_image | image_url: width: 600 }}"
+              alt="{{ post.caption.value | truncate: 100 }}"
+              loading="lazy"
+            >
+          {% endif %}
+
+          <div class="instagram-overlay">
+            {% if post.likes.value %}
+              <span class="likes">❤️ {{ post.likes.value }}</span>
+            {% endif %}
+            {% if post.comments.value %}
+              <span class="comments">💬 {{ post.comments.value }}</span>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}
 ```
 
-Using pnpm:
+#### Display Single Post
 
-```shell
-pnpm run dev
+```liquid
+{% assign instagram_list = shop.metaobjects.nn_instagram_list.values | first %}
+{% if instagram_list %}
+  {% assign latest_post = instagram_list.posts.value.first %}
+  {% assign post_data = latest_post.data.value | parse_json %}
+
+  <div class="featured-instagram">
+    <h3>Latest from Instagram</h3>
+
+    {% if latest_post.images.value.size > 0 %}
+      <img
+        src="{{ latest_post.images.value.first | image_url: width: 800 }}"
+        alt="Instagram post"
+      >
+    {% endif %}
+
+    {% if latest_post.caption.value %}
+      <p>{{ latest_post.caption.value | truncate: 200 }}</p>
+    {% endif %}
+
+    <div class="engagement">
+      <span>❤️ {{ latest_post.likes.value }} likes</span>
+      <span>💬 {{ latest_post.comments.value }} comments</span>
+    </div>
+  </div>
+{% endif %}
 ```
 
-Press P to open the URL to your app. Once you click install, you can start development.
+#### Check Connection Status
 
-Local development is powered by [the Shopify CLI](https://shopify.dev/docs/apps/tools/cli). It logs into your partners account, connects to an app, provides environment variables, updates remote config, creates a tunnel and provides commands to generate extensions.
+```liquid
+{% assign instagram_list = shop.metaobjects.nn_instagram_list.values | first %}
 
-### Authenticating and querying data
+{% if instagram_list %}
+  <p>Connected to Instagram ✓</p>
+{% else %}
+  <p>No Instagram feed connected</p>
+{% endif %}
+```
 
-To authenticate and query data you can use the `shopify` const that is exported from `/app/shopify.server.js`:
+## Data Structure
 
-```js
-export async function loader({ request }) {
-  const { admin } = await shopify.authenticate.admin(request);
+### Instagram Post Metaobject (nn_instagram_post)
 
-  const response = await admin.graphql(`
-    {
-      products(first: 25) {
-        nodes {
-          title
-          description
-        }
-      }
-    }`);
+Each Instagram post is stored as a metaobject with the following fields:
 
-  const {
-    data: {
-      products: { nodes },
-    },
-  } = await response.json();
+| Field    | Type                | Required | Description                                 |
+| -------- | ------------------- | -------- | ------------------------------------------- |
+| data     | JSON                | Yes      | Full Instagram post data (raw API response) |
+| images   | File Reference List | No       | Uploaded images/videos from the post        |
+| caption  | Multi-line Text     | No       | Instagram post caption                      |
+| likes    | Number (Integer)    | No       | Number of likes                             |
+| comments | Number (Integer)    | No       | Number of comments                          |
 
-  return nodes;
+**JSON Data Structure:**
+
+The `data` field contains the raw Instagram API response, including:
+
+- `id`: Instagram media ID
+- `media_type`: "IMAGE", "VIDEO", or "CAROUSEL_ALBUM"
+- `media_url`: Original Instagram media URL
+- `permalink`: Link to post on Instagram
+- `timestamp`: Publication timestamp
+- `username`: Instagram username
+
+### Instagram List Metaobject (nn_instagram_list)
+
+A single list metaobject stores the feed configuration:
+
+| Field | Type                      | Required | Description                          |
+| ----- | ------------------------- | -------- | ------------------------------------ |
+| data  | JSON                      | Yes      | Feed metadata and configuration      |
+| posts | Metaobject Reference List | No       | List of nn_instagram_post references |
+
+### Shopify Files
+
+All images and videos are uploaded to **Shopify Files** for:
+
+- CDN delivery (fast global loading)
+- Shopify image transformations (automatic resizing, cropping)
+- Theme compatibility
+- No external dependencies
+
+Access via `{{ file | image_url: width: 600 }}` in Liquid.
+
+## Architecture
+
+### Instagram Business API Integration
+
+**OAuth Flow:**
+
+1. User clicks "Connect Instagram Account"
+2. Redirected to Instagram OAuth (`/instagram`)
+3. Instagram authorization screen
+4. Callback to `/instagram/callback` with auth code
+5. Exchange code for short-lived token
+6. Exchange short-lived for long-lived token (60 days)
+7. Fetch Instagram Business Account ID
+8. Store token in database
+
+**API Scopes:**
+
+- `instagram_business_basic` - Read profile and posts
+- `instagram_business_manage_messages` - Future messaging features
+- `instagram_business_manage_comments` - Future comment moderation
+- `instagram_business_content_publish` - Future content publishing
+- `instagram_business_manage_insights` - Analytics and insights
+
+**Token Management:**
+
+- Long-lived tokens valid for 60 days
+- Stored securely in PostgreSQL via Prisma
+- Automatic refresh planned for future versions
+
+### Sync Process
+
+**When user clicks "Sync Instagram Posts":**
+
+1. Fetch posts from Instagram Business API:
+
+   ```
+   GET /me/media?fields=id,media_type,media_url,permalink,caption,timestamp,username,children
+   ```
+
+2. For carousel posts, fetch child media:
+
+   ```
+   GET /{media_id}/children?fields=media_type,media_url
+   ```
+
+3. Download images/videos from Instagram URLs
+
+4. Upload to Shopify Files API:
+
+   ```graphql
+   mutation fileCreate($files: [FileCreateInput!]!) {
+     fileCreate(files: $files)
+   }
+   ```
+
+5. Create/update `nn_instagram_post` metaobjects:
+
+   ```graphql
+   mutation metaobjectUpsert(
+     $handle: MetaobjectHandleInput!
+     $metaobject: MetaobjectUpsertInput!
+   ) {
+     metaobjectUpsert(handle: $handle, metaobject: $metaobject)
+   }
+   ```
+
+6. Update `nn_instagram_list` with post references
+
+7. Return sync statistics to dashboard
+
+### Database Schema
+
+```prisma
+model SocialAccount {
+  id          String   @id @default(cuid())
+  shop        String
+  provider    String   // "instagram"
+  accessToken String   // Long-lived Instagram token
+  userId      String?  // Instagram Business Account ID
+  expiresAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([shop, provider])
+  @@map("social_accounts")
+}
+
+model Session {
+  id          String    @id
+  shop        String
+  state       String
+  isOnline    Boolean   @default(false)
+  scope       String?
+  expires     DateTime?
+  accessToken String
+  userId      BigInt?
+  firstName   String?
+  lastName    String?
+  email       String?
+  accountOwner Boolean  @default(false)
+  locale      String?
+  collaborator Boolean? @default(false)
+  emailVerified Boolean? @default(false)
 }
 ```
 
-This template comes preconfigured with examples of:
+### Webhooks
 
-1. Setting up your Shopify app in [/app/shopify.server.ts](https://github.com/Shopify/shopify-app-template-remix/blob/main/app/shopify.server.ts)
-2. Querying data using Graphql. Please see: [/app/routes/app.\_index.tsx](https://github.com/Shopify/shopify-app-template-remix/blob/main/app/routes/app._index.tsx).
-3. Responding to webhooks in individual files such as [/app/routes/webhooks.app.uninstalled.tsx](https://github.com/Shopify/shopify-app-template-remix/blob/main/app/routes/webhooks.app.uninstalled.tsx) and [/app/routes/webhooks.app.scopes_update.tsx](https://github.com/Shopify/shopify-app-template-remix/blob/main/app/routes/webhooks.app.scopes_update.tsx)
+The app subscribes to Shopify webhooks:
 
-Please read the [documentation for @shopify/shopify-app-remix](https://www.npmjs.com/package/@shopify/shopify-app-remix#authenticating-admin-requests) to understand what other API's are available.
+- `app/uninstalled` - Clean up data on uninstall
+- `app/scopes_update` - Handle scope changes
+- GDPR compliance webhooks:
+  - `customers/data_request`
+  - `customers/redact`
+  - `shop/redact`
+
+### App URLs
+
+| Endpoint              | Method | Description                                   |
+| --------------------- | ------ | --------------------------------------------- |
+| `/app/_index`         | GET    | Initial setup, creates metaobject definitions |
+| `/app/dashboard`      | GET    | Main dashboard UI                             |
+| `/app/dashboard`      | POST   | Handle sync/disconnect actions                |
+| `/instagram`          | GET    | Initiate Instagram OAuth                      |
+| `/instagram/callback` | GET    | Handle OAuth callback                         |
+
+## Customization Guide
+
+### Full Control Over HTML/CSS
+
+The Near Native approach gives you complete control over how the Instagram feed is displayed:
+
+**1. Edit Block File Directly**
+
+The theme block is a Liquid file you can edit:
+
+- `extensions/instagram-feed/blocks/instagram-carousel.liquid`
+
+Modify the HTML structure, add custom Liquid logic, or completely redesign the layout.
+
+**2. Override Styles in Your Theme**
+
+The block uses namespaced CSS classes (`.nn-instagram-*`) that you can override in your theme's CSS:
+
+```css
+/* In your theme's CSS file */
+.nn-instagram-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* Custom grid */
+  gap: 8px; /* Tighter spacing */
+}
+
+.nn-instagram-post {
+  border-radius: 0; /* Square posts */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.nn-instagram-post:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+```
+
+**3. Use Theme Settings**
+
+The block has configurable settings in the theme editor:
+
+- Posts limit (1-50)
+- Aspect ratio (portrait/square)
+- Border radius (0-48px)
+- Gap between posts (0-64px)
+- Padding controls
+- Header visibility
+- Handle display
+
+**4. Build Completely Custom Implementations**
+
+Access Instagram data directly in any Liquid file:
+
+```liquid
+{% assign instagram_list = shop.metaobjects.nn_instagram_list.values | first %}
+{% assign posts = instagram_list.posts.value %}
+
+<!-- Build your own custom layout -->
+<div class="my-custom-instagram-slider">
+  {% for post in posts %}
+    <!-- Your custom HTML here -->
+  {% endfor %}
+</div>
+```
+
+### Example: Instagram Slider with Swiper.js
+
+```liquid
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+
+<div class="swiper">
+  <div class="swiper-wrapper">
+    {% assign instagram_list = shop.metaobjects.nn_instagram_list.values | first %}
+    {% for post_ref in instagram_list.posts.value limit: 20 %}
+      {% assign post = post_ref %}
+
+      <div class="swiper-slide">
+        {% if post.images.value.size > 0 %}
+          <img
+            src="{{ post.images.value.first | image_url: width: 800 }}"
+            alt="{{ post.caption.value | truncate: 100 }}"
+          >
+        {% endif %}
+
+        <div class="post-caption">
+          {{ post.caption.value | truncate: 150 }}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="swiper-pagination"></div>
+  <div class="swiper-button-prev"></div>
+  <div class="swiper-button-next"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+  new Swiper('.swiper', {
+    slidesPerView: 1,
+    spaceBetween: 16,
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+    pagination: {
+      el: '.swiper-pagination',
+    },
+    breakpoints: {
+      640: { slidesPerView: 2 },
+      1024: { slidesPerView: 4 },
+    },
+  });
+</script>
+```
 
 ## Deployment
 
-### Application Storage
+### Deploy to Vercel
 
-This template uses [Prisma](https://www.prisma.io/) to store session data, by default using an [SQLite](https://www.sqlite.org/index.html) database.
-The database is defined as a Prisma schema in `prisma/schema.prisma`.
+The app is deployed on Vercel:
 
-This use of SQLite works in production if your app runs as a single instance.
-The database that works best for you depends on the data your app needs and how it is queried.
-You can run your database of choice on a server yourself or host it with a SaaS company.
-Here's a short list of databases providers that provide a free tier to get started:
+```bash
+# Install Vercel CLI
+npm install -g vercel
 
-| Database   | Type             | Hosters                                                                                                                                                                                                                               |
-| ---------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| MySQL      | SQL              | [Digital Ocean](https://www.digitalocean.com/products/managed-databases-mysql), [Planet Scale](https://planetscale.com/), [Amazon Aurora](https://aws.amazon.com/rds/aurora/), [Google Cloud SQL](https://cloud.google.com/sql/docs/mysql) |
-| PostgreSQL | SQL              | [Digital Ocean](https://www.digitalocean.com/products/managed-databases-postgresql), [Amazon Aurora](https://aws.amazon.com/rds/aurora/), [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres)                                   |
-| Redis      | Key-value        | [Digital Ocean](https://www.digitalocean.com/products/managed-databases-redis), [Amazon MemoryDB](https://aws.amazon.com/memorydb/)                                                                                                        |
-| MongoDB    | NoSQL / Document | [Digital Ocean](https://www.digitalocean.com/products/managed-databases-mongodb), [MongoDB Atlas](https://www.mongodb.com/atlas/database)                                                                                                  |
-
-To use one of these, you can use a different [datasource provider](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#datasource) in your `schema.prisma` file, or a different [SessionStorage adapter package](https://github.com/Shopify/shopify-api-js/blob/main/packages/shopify-api/docs/guides/session-storage.md).
-
-### Build
-
-Remix handles building the app for you, by running the command below with the package manager of your choice:
-
-Using yarn:
-
-```shell
-yarn build
+# Deploy
+vercel --prod
 ```
 
-Using npm:
+**Environment Variables:**
 
-```shell
-npm run build
-```
+Configure in Vercel dashboard:
 
-Using pnpm:
+- `DATABASE_URL` - Prisma Accelerate connection string
+- `SHOPIFY_API_KEY` - From Shopify Partner dashboard
+- `SHOPIFY_API_SECRET` - From Shopify Partner dashboard
+- `INSTAGRAM_APP_ID` - From Facebook Developers
+- `INSTAGRAM_APP_SECRET` - From Facebook Developers
+- `INSTAGRAM_REDIRECT_URI` - Your Vercel deployment URL + `/instagram/callback`
+- `INSTA_SCOPES` - Instagram API scopes (comma-separated)
 
-```shell
-pnpm run build
-```
+### Update Shopify App Configuration
 
-## Hosting
+After deploying:
 
-When you're ready to set up your app in production, you can follow [our deployment documentation](https://shopify.dev/docs/apps/deployment/web) to host your app on a cloud provider like [Heroku](https://www.heroku.com/) or [Fly.io](https://fly.io/).
-
-When you reach the step for [setting up environment variables](https://shopify.dev/docs/apps/deployment/web#set-env-vars), you also need to set the variable `NODE_ENV=production`.
-
-### Hosting on Vercel
-
-Using the Vercel Preset is recommended when hosting your Shopify Remix app on Vercel. You'll also want to ensure imports that would normally come from `@remix-run/node` are imported from `@vercel/remix` instead. Learn more about hosting Remix apps on Vercel [here](https://vercel.com/docs/frameworks/remix).
-
-```diff
-// vite.config.ts
-import { vitePlugin as remix } from "@remix-run/dev";
-import { defineConfig, type UserConfig } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
-+ import { vercelPreset } from '@vercel/remix/vite';
-
-installGlobals();
-
-export default defineConfig({
-  plugins: [
-    remix({
-      ignoredRouteFiles: ["**/.*"],
-+     presets: [vercelPreset()],
-    }),
-    tsconfigPaths(),
-  ],
-});
-```
-
-## Troubleshooting
-
-### Database tables don't exist
-
-If you get this error:
-
-```
-The table `main.Session` does not exist in the current database.
-```
-
-You need to create the database for Prisma. Run the `setup` script in `package.json` using your preferred package manager.
-
-### Navigating/redirecting breaks an embedded app
-
-Embedded Shopify apps must maintain the user session, which can be tricky inside an iFrame. To avoid issues:
-
-1. Use `Link` from `@remix-run/react` or `@shopify/polaris`. Do not use `<a>`.
-2. Use the `redirect` helper returned from `authenticate.admin`. Do not use `redirect` from `@remix-run/node`
-3. Use `useSubmit` or `<Form/>` from `@remix-run/react`. Do not use a lowercase `<form/>`.
-
-This only applies if your app is embedded, which it will be by default.
-
-### Non Embedded
-
-Shopify apps are best when they are embedded in the Shopify Admin, which is how this template is configured. If you have a reason to not embed your app please make the following changes:
-
-1. Ensure `embedded = false` is set in [shopify.app.toml`](./shopify.app.toml). [Docs here](https://shopify.dev/docs/apps/build/cli-for-apps/app-configuration#global).
-2. Pass `isEmbeddedApp: false` to `shopifyApp()` in `./app/shopify.server.js|ts`.
-3. Change the `isEmbeddedApp` prop to `isEmbeddedApp={false}` for the `AppProvider` in `/app/routes/app.jsx|tsx`.
-4. Remove the `@shopify/app-bridge-react` dependency from [package.json](./package.json) and `vite.config.ts|js`.
-5. Remove anything imported from `@shopify/app-bridge-react`.  For example: `NavMenu`, `TitleBar` and `useAppBridge`.
-
-### OAuth goes into a loop when I change my app's scopes
-
-If you change your app's scopes and authentication goes into a loop and fails with a message from Shopify that it tried too many times, you might have forgotten to update your scopes with Shopify.
-To do that, you can run the `deploy` CLI command.
-
-Using yarn:
-
-```shell
-yarn deploy
-```
-
-Using npm:
-
-```shell
+```bash
+# Update app URLs and deploy extensions
 npm run deploy
 ```
 
-Using pnpm:
+This will:
 
-```shell
-pnpm run deploy
-```
+- Update OAuth redirect URLs
+- Register webhooks
+- Deploy theme app extensions
 
-### My shop-specific webhook subscriptions aren't updated
+## Testing Instructions
 
-If you are registering webhooks in the `afterAuth` hook, using `shopify.registerWebhooks`, you may find that your subscriptions aren't being updated.  
+For complete testing guide, see [SHOPIFY_TESTING_INSTRUCTIONS.md](./SHOPIFY_TESTING_INSTRUCTIONS.md).
 
-Instead of using the `afterAuth` hook, the recommended approach is to declare app-specific webhooks in the `shopify.app.toml` file.  This approach is easier since Shopify will automatically update changes to webhook subscriptions every time you run `deploy` (e.g: `npm run deploy`).  Please read these guides to understand more:
+**Quick Test Checklist:**
 
-1. [app-specific vs shop-specific webhooks](https://shopify.dev/docs/apps/build/webhooks/subscribe#app-specific-subscriptions)
-2. [Create a subscription tutorial](https://shopify.dev/docs/apps/build/webhooks/subscribe/get-started?framework=remix&deliveryMethod=https)
+- [ ] Install app on development store
+- [ ] Connect Instagram Business account
+- [ ] Sync Instagram posts successfully
+- [ ] Verify posts in **Content → Metaobjects → NN Instagram Post**
+- [ ] Verify images in **Content → Files**
+- [ ] Add app block to theme
+- [ ] Configure display settings in theme editor
+- [ ] Preview storefront - feed displays correctly
+- [ ] Test responsive design (mobile/desktop)
+- [ ] Test disconnect functionality
+- [ ] Verify all data is deleted after disconnect
 
-If you do need shop-specific webhooks, please keep in mind that the package calls `afterAuth` in 2 scenarios:
+## Troubleshooting
 
-- After installing the app
-- When an access token expires
+### Instagram OAuth Fails
 
-During normal development, the app won't need to re-authenticate most of the time, so shop-specific subscriptions aren't updated. To force your app to update the subscriptions, you can uninstall and reinstall it in your development store. That will force the OAuth process and call the `afterAuth` hook.
+**Issue**: OAuth redirects but doesn't complete
 
-### Admin created webhook failing HMAC validation
+**Solutions:**
 
-Webhooks subscriptions created in the [Shopify admin](https://help.shopify.com/en/manual/orders/notifications/webhooks) will fail HMAC validation. This is because the webhook payload is not signed with your app's secret key.  There are 2 solutions:
+- Verify `INSTAGRAM_REDIRECT_URI` matches exactly in:
+  - `.env` file
+  - Facebook App settings
+  - Shopify app configuration
+- Ensure Instagram account is a Business or Creator account
+- Check that all required scopes are approved in Facebook App Review
 
-1. Use [app-specific webhooks](https://shopify.dev/docs/apps/build/webhooks/subscribe#app-specific-subscriptions) defined in your toml file instead (recommended)
-2. Create [webhook subscriptions](https://shopify.dev/docs/api/shopify-app-remix/v1/guide-webhooks) using the `shopifyApp` object.
+### Sync Returns No Posts
 
-Test your webhooks with the [Shopify CLI](https://shopify.dev/docs/apps/tools/cli/commands#webhook-trigger) or by triggering events manually in the Shopify admin(e.g. Updating the product title to trigger a `PRODUCTS_UPDATE`).
+**Issue**: Sync completes but no posts appear
 
-### Incorrect GraphQL Hints
+**Solutions:**
 
-By default the [graphql.vscode-graphql](https://marketplace.visualstudio.com/items?itemName=GraphQL.vscode-graphql) extension for VS Code will assume that GraphQL queries or mutations are for the [Shopify Admin API](https://shopify.dev/docs/api/admin). This is a sensible default, but it may not be true if:
+- Verify Instagram Business Account is connected (not personal account)
+- Check that account has published posts
+- Verify API permissions in Facebook App dashboard
+- Check token expiration date in database
 
-1. You use another Shopify API such as the storefront API.
-2. You use a third party GraphQL API.
+### Images Don't Load
 
-in this situation, please update the [.graphqlrc.ts](https://github.com/Shopify/shopify-app-template-remix/blob/main/.graphqlrc.ts) config.
+**Issue**: Posts sync but images show broken
 
-### First parameter has member 'readable' that is not a ReadableStream.
+**Solutions:**
 
-See [hosting on Vercel](#hosting-on-vercel).
+- Check Shopify Files in admin - images should be uploaded
+- Verify `write_files` scope is granted
+- Check network tab for CORS or CDN issues
+- Try re-syncing to re-upload images
 
-### Admin object undefined on webhook events triggered by the CLI
+### App Block Doesn't Appear
 
-When you trigger a webhook event using the Shopify CLI, the `admin` object will be `undefined`. This is because the CLI triggers an event with a valid, but non-existent, shop. The `admin` object is only available when the webhook is triggered by a shop that has installed the app.
+**Issue**: Can't find app block in theme editor
 
-Webhooks triggered by the CLI are intended for initial experimentation testing of your webhook configuration. For more information on how to test your webhooks, see the [Shopify CLI documentation](https://shopify.dev/docs/apps/tools/cli/commands#webhook-trigger).
+**Solutions:**
 
-### Using Defer & await for streaming responses
+- Run `npm run deploy` to deploy extensions
+- Verify theme is OS 2.0 compatible
+- Check `extensions/instagram-feed/blocks/instagram-carousel.liquid` exists
+- Clear browser cache and refresh theme editor
 
-To test [streaming using defer/await](https://remix.run/docs/en/main/guides/streaming) during local development you'll need to use the Shopify CLI slightly differently:
+### Token Expired
 
-1. First setup ngrok: https://ngrok.com/product/secure-tunnels
-2. Create an ngrok tunnel on port 8080: `ngrok http 8080`.
-3. Copy the forwarding address. This should be something like: `https://f355-2607-fea8-bb5c-8700-7972-d2b5-3f2b-94ab.ngrok-free.app`
-4. In a separate terminal run `yarn shopify app dev --tunnel-url=TUNNEL_URL:8080` replacing `TUNNEL_URL` for the address you copied in step 3.
+**Issue**: Sync fails with authentication error
 
-By default the CLI uses a cloudflare tunnel. Unfortunately it cloudflare tunnels wait for the Response stream to finish, then sends one chunk.
+**Solutions:**
 
-This will not affect production, since tunnels are only for local development.
+- Disconnect and reconnect Instagram account
+- Check `expiresAt` in `SocialAccount` table
+- Tokens last 60 days - reconnect before expiration
+- Future versions will auto-refresh tokens
 
-### Using MongoDB and Prisma
+## Future Plans
 
-By default this template uses SQLlite as the database. It is recommended to move to a persisted database for production. If you choose to use MongoDB, you will need to make some modifications to the schema and prisma configuration. For more information please see the [Prisma MongoDB documentation](https://www.prisma.io/docs/orm/overview/databases/mongodb).
+Planned features:
 
-Alternatively you can use a MongDB database directly with the [MongoDB session storage adapter](https://github.com/Shopify/shopify-app-js/tree/main/packages/apps/session-storage/shopify-app-session-storage-mongodb).
+- **Automatic Token Refresh**: Auto-renew tokens before 60-day expiration
+- **Scheduled Sync**: Background sync on a schedule (daily, weekly)
+- **Hashtag Filtering**: Sync only posts with specific hashtags
+- **Story Support**: Display Instagram Stories (24-hour availability)
+- **Reel Support**: Enhanced video post display
+- **Comment Display**: Show Instagram comments on posts
+- **Multi-Account**: Support multiple Instagram accounts per store
+- **Analytics**: Track which posts drive the most engagement
 
-#### Mapping the id field
+## About Near Native
 
-In MongoDB, an ID must be a single field that defines an @id attribute and a @map("\_id") attribute.
-The prisma adapter expects the ID field to be the ID of the session, and not the \_id field of the document.
+The Near Native brand builds apps that are as close to native Shopify functionality as possible. Key principles:
 
-To make this work you can add a new field to the schema that maps the \_id field to the id field. For more information see the [Prisma documentation](https://www.prisma.io/docs/orm/prisma-schema/data-model/models#defining-an-id-field)
-
-```prisma
-model Session {
-  session_id  String    @id @default(auto()) @map("_id") @db.ObjectId
-  id          String    @unique
-...
-}
-```
-
-#### Error: The "mongodb" provider is not supported with this command
-
-MongoDB does not support the [prisma migrate](https://www.prisma.io/docs/orm/prisma-migrate/understanding-prisma-migrate/overview) command. Instead, you can use the [prisma db push](https://www.prisma.io/docs/orm/reference/prisma-cli-reference#db-push) command and update the `shopify.web.toml` file with the following commands. If you are using MongoDB please see the [Prisma documentation](https://www.prisma.io/docs/orm/overview/databases/mongodb) for more information.
-
-```toml
-[commands]
-predev = "npx prisma generate && npx prisma db push"
-dev = "npm exec remix vite:dev"
-```
-
-#### Prisma needs to perform transactions, which requires your mongodb server to be run as a replica set
-
-See the [Prisma documentation](https://www.prisma.io/docs/getting-started/setup-prisma/start-from-scratch/mongodb/connect-your-database-node-mongodb) for connecting to a MongoDB database.
-
-### I want to use Polaris v13.0.0 or higher
-
-Currently, this template is set up to work on node v18.20 or higher. However, `@shopify/polaris` is limited to v12 because v13 can only run on node v20+.
-
-You don't have to make any changes to the code in order to be able to upgrade Polaris to v13, but you'll need to do the following:
-
-- Upgrade your node version to v20.10 or higher.
-- Update your `Dockerfile` to pull `FROM node:20-alpine` instead of `node:18-alpine`
-
-### "nbf" claim timestamp check failed
-
-This error will occur of the `nbf` claim timestamp check failed. This is because the JWT token is expired.
-If you  are consistently getting this error, it could be that the clock on your machine is not in sync with the server.
-
-To fix this ensure you have enabled `Set time and date automatically` in the `Date and Time` settings on your computer.
-
-## Benefits
-
-Shopify apps are built on a variety of Shopify tools to create a great merchant experience.
-
-<!-- TODO: Uncomment this after we've updated the docs -->
-<!-- The [create an app](https://shopify.dev/docs/apps/getting-started/create) tutorial in our developer documentation will guide you through creating a Shopify app using this template. -->
-
-The Remix app template comes with the following out-of-the-box functionality:
-
-- [OAuth](https://github.com/Shopify/shopify-app-js/tree/main/packages/shopify-app-remix#authenticating-admin-requests): Installing the app and granting permissions
-- [GraphQL Admin API](https://github.com/Shopify/shopify-app-js/tree/main/packages/shopify-app-remix#using-the-shopify-admin-graphql-api): Querying or mutating Shopify admin data
-- [Webhooks](https://github.com/Shopify/shopify-app-js/tree/main/packages/shopify-app-remix#authenticating-webhook-requests): Callbacks sent by Shopify when certain events occur
-- [AppBridge](https://shopify.dev/docs/api/app-bridge): This template uses the next generation of the Shopify App Bridge library which works in unison with previous versions.
-- [Polaris](https://polaris.shopify.com/): Design system that enables apps to create Shopify-like experiences
-
-## Tech Stack
-
-This template uses [Remix](https://remix.run). The following Shopify tools are also included to ease app development:
-
-- [Shopify App Remix](https://shopify.dev/docs/api/shopify-app-remix) provides authentication and methods for interacting with Shopify APIs.
-- [Shopify App Bridge](https://shopify.dev/docs/apps/tools/app-bridge) allows your app to seamlessly integrate your app within Shopify's Admin.
-- [Polaris React](https://polaris.shopify.com/) is a powerful design system and component library that helps developers build high quality, consistent experiences for Shopify merchants.
-- [Webhooks](https://github.com/Shopify/shopify-app-js/tree/main/packages/shopify-app-remix#authenticating-webhook-requests): Callbacks sent by Shopify when certain events occur
-- [Polaris](https://polaris.shopify.com/): Design system that enables apps to create Shopify-like experiences
+- **Data storage**: Always in shop-owner-accessible systems (metafields/metaobjects)
+- **External storage**: Kept to an absolute minimum (only OAuth tokens)
+- **Design flexibility**: Data accessible through Liquid templates
+- **Best practices**: Proper linking throughout objects for easy data access
+- **Portability**: Merchants own their data, no vendor lock-in
 
 ## Resources
 
-- [Remix Docs](https://remix.run/docs/en/v1)
-- [Shopify App Remix](https://shopify.dev/docs/api/shopify-app-remix)
-- [Introduction to Shopify apps](https://shopify.dev/docs/apps/getting-started)
-- [App authentication](https://shopify.dev/docs/apps/auth)
-- [Shopify CLI](https://shopify.dev/docs/apps/tools/cli)
-- [App extensions](https://shopify.dev/docs/apps/app-extensions/list)
-- [Shopify Functions](https://shopify.dev/docs/api/functions)
-- [Getting started with internationalizing your app](https://shopify.dev/docs/apps/best-practices/internationalization/getting-started)
+- [Instagram Business API Documentation](https://developers.facebook.com/docs/instagram-api)
+- [Metaobjects Documentation](https://shopify.dev/docs/apps/build/custom-data/metaobjects)
+- [Shopify Files API](https://shopify.dev/docs/api/admin-graphql/latest/mutations/fileCreate)
+- [Liquid Documentation](https://shopify.dev/docs/api/liquid)
+- [React Router Shopify App Docs](https://shopify.dev/docs/api/shopify-app-react-router)
+- [Theme App Extensions](https://shopify.dev/docs/apps/online-store/theme-app-extensions)
+
+## License
+
+This project is proprietary software. All rights reserved.
+
+## Author
+
+**Mohamed Amezian**
+
+- GitHub: [@mohamedamezian](https://github.com/mohamedamezian)
+- App: [NN Instagram](https://nn-instagram.vercel.app)
+
+---
+
+**Built with ❤️ for Shopify merchants following Near Native principles**
