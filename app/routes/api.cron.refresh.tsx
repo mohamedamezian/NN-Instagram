@@ -1,5 +1,6 @@
 import prisma from "app/db.server";
 import { LoaderFunctionArgs } from "react-router";
+import { decryptToken, encryptToken } from "../utils/encryption.server";
 
 export const loader = async ({}: LoaderFunctionArgs) => {
   try {
@@ -20,8 +21,11 @@ export const loader = async ({}: LoaderFunctionArgs) => {
     }
 
     for (const token of currentIgToken) {
+      // Decrypt token before using it in API call
+      const decryptedToken = decryptToken(token.accessToken);
+      
       const res = await fetch(
-        `${refreshUrl}?grant_type=ig_refresh_token&access_token=${token.accessToken}`,
+        `${refreshUrl}?grant_type=ig_refresh_token&access_token=${decryptedToken}`,
         {
           method: "GET",
         },
@@ -38,7 +42,7 @@ export const loader = async ({}: LoaderFunctionArgs) => {
             },
           },
           update: {
-            accessToken: data.access_token,
+            accessToken: encryptToken(data.access_token), // Encrypt new token
             expiresAt: data.expires_in
               ? new Date(Date.now() + data.expires_in * 1000)
               : null,
@@ -46,7 +50,7 @@ export const loader = async ({}: LoaderFunctionArgs) => {
           create: {
             shop: token.shop,
             provider: token.provider,
-            accessToken: data.access_token,
+            accessToken: encryptToken(data.access_token), // Encrypt new token
             expiresAt: data.expires_in
               ? new Date(Date.now() + data.expires_in * 1000)
               : null,

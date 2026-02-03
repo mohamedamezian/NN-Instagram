@@ -17,25 +17,7 @@ import type {
   FilesQueryResponse
 } from "../types/shopify.types";
 
-/**
- * Get optimized media URL from Instagram
- * Instagram images can be very large (>2MB). Request medium size instead.
- * 
- * @param mediaUrl - Original Instagram media URL
- * @param mediaType - Type of media (IMAGE or VIDEO)
- * @returns Optimized URL with size parameters
- */
-function getOptimizedMediaUrl(mediaUrl: string, mediaType: string): string {
-  if (mediaType === "VIDEO") {
-    // Videos can't be resized via URL params, use original
-    return mediaUrl;
-  }
-  
-  // For images, Instagram supports size query parameters
-  // However, the Graph API URLs are already optimized
-  // The Shopify CDN will handle further optimization on delivery
-  return mediaUrl;
-}
+
 
 export async function createShopifyFile(
   admin: ShopifyAdmin,

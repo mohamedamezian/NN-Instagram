@@ -4,7 +4,7 @@
 
 {% comment %} Fallback: try to find any nn_instagram_list if none selected {% endcomment %}
 {% if lists == blank %}
-  {% assign lists = metaobjects['nn_instagram_list'].first %}
+  {% assign lists = metaobjects.nn_instagram_list.first %}
 {% endif %}
 
 {% if lists == blank %}
@@ -28,160 +28,168 @@
       </div>
       <div class="fade-left" aria-hidden="true"></div>
       {% for post in lists.posts.value %}
-      <div
-        class="instagram-card"
-        data-index="{{ forloop.index0 }}"
-      >
-        {% for media in post.images.value limit: 1 %}
-          {% if media.sources %}
-            {{ media | video_tag: autoplay: true, loop: true, muted: true, class: 'instagram-video' }}
-          {% else %}
-            <img
-              class="instagram-image"
-              src="{{ media | image_url: width: 400, height: 600, crop: 'center' }}"
-              srcset="{{ media | image_url: width: 400, height: 600, crop: 'center' }} 400w,
-                      {{ media | image_url: width: 600, height: 900, crop: 'center' }} 600w"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
-              width="320"
-              height="480"
-              alt="Instagram Post Image"
-              loading="lazy"
-              decoding="async"
-            >
-          {% endif %}
-        {% endfor %}
-        <div class="overlay">
-          <svg width="48px" height="48px" fill="#ffffffff" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-            <g id="SVGRepo_bgCarrier" stroke-width="2"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><title></title><path d="M44,57H20A13,13,0,0,1,7,44V20A13,13,0,0,1,20,7H44A13,13,0,0,1,57,20V44A13,13,0,0,1,44,57ZM20,9A11,11,0,0,0,9,20V44A11,11,0,0,0,20,55H44A11,11,0,0,0,55,44V20A11,11,0,0,0,44,9Z"></path><path d="M32,43.67A11.67,11.67,0,1,1,43.67,32,11.68,11.68,0,0,1,32,43.67Zm0-21.33A9.67,9.67,0,1,0,41.67,32,9.68,9.68,0,0,0,32,22.33Z"></path><path d="M44.5,21A3.5,3.5,0,1,1,48,17.5,3.5,3.5,0,0,1,44.5,21Zm0-5A1.5,1.5,0,1,0,46,17.5,1.5,1.5,0,0,0,44.5,16Z"></path></g>
-          </svg>
-          <div class="stats">
-            <span class="likes">
-              {{ post.likes.value }}
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-              </svg>
-            </span>
-            <span class="comments">
-              {{ post.comments.value }}
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
-                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
-              </svg>
-            </span>
+        <div
+          class="instagram-card"
+          data-index="{{ forloop.index0 }}"
+        >
+          {% for media in post.images.value limit: 1 %}
+            {% if media.sources %}
+              {{ media | video_tag: autoplay: true, loop: true, muted: true, class: 'instagram-video' }}
+            {% else %}
+              <img
+                class="instagram-image"
+                src="{{ media | image_url: width: 400, height: 600, crop: 'center' }}"
+                srcset="
+                  {{ media | image_url: width: 400, height: 600, crop: 'center' }} 400w,
+                  {{ media | image_url: width: 600, height: 900, crop: 'center' }} 600w
+                "
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
+                width="320"
+                height="480"
+                alt="Instagram Post Image"
+                loading="lazy"
+                decoding="async"
+              >
+            {% endif %}
+          {% endfor %}
+          <div class="overlay">
+            <svg width="48px" height="48px" fill="#ffffffff" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+              <g id="SVGRepo_bgCarrier" stroke-width="2"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><title></title><path d="M44,57H20A13,13,0,0,1,7,44V20A13,13,0,0,1,20,7H44A13,13,0,0,1,57,20V44A13,13,0,0,1,44,57ZM20,9A11,11,0,0,0,9,20V44A11,11,0,0,0,20,55H44A11,11,0,0,0,55,44V20A11,11,0,0,0,44,9Z"></path><path d="M32,43.67A11.67,11.67,0,1,1,43.67,32,11.68,11.68,0,0,1,32,43.67Zm0-21.33A9.67,9.67,0,1,0,41.67,32,9.68,9.68,0,0,0,32,22.33Z"></path><path d="M44.5,21A3.5,3.5,0,1,1,48,17.5,3.5,3.5,0,0,1,44.5,21Zm0-5A1.5,1.5,0,1,0,46,17.5,1.5,1.5,0,0,0,44.5,16Z"></path></g>
+            </svg>
+            <div class="stats">
+              <span class="likes">
+                {{ post.likes.value }}
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+              </span>
+              <span class="comments">
+                {{ post.comments.value }}
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                  <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+                </svg>
+              </span>
+            </div>
           </div>
         </div>
+      {% endfor %}
+      <div class="scroll-right" role="button" aria-label="Scroll right" tabindex="0">
+        <svg class="arrow-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" />
+        </svg>
       </div>
-    {% endfor %}
-    <div class="scroll-right" role="button" aria-label="Scroll right" tabindex="0">
-      <svg class="arrow-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" />
-      </svg>
-    </div>
-    <div class="fade-right" aria-hidden="true"></div>
-  </section>
-  {% if block.settings.show_handle %}
-    <footer>
-      <h4>@{{ lists.username }}</h4>
-    </footer>
-  {% endif %}
+      <div class="fade-right" aria-hidden="true"></div>
+    </section>
+    {% if block.settings.show_handle %}
+      <footer>
+        <h4>@{{ lists.username }}</h4>
+      </footer>
+    {% endif %}
   </div>
 
   <div class="modal" aria-hidden="true">
     <div class="modal-posts-container">
       {% for post in lists.posts.value %}
-      <div class="modal-post" data-post-index="{{ forloop.index0 }}">
-        <!-- Header with username -->
-        <div class="modal-header">
-          <div class="modal-username">@{{ lists.username }}</div>
-        </div>
+        <div class="modal-post" data-post-index="{{ forloop.index0 }}">
+          <!-- Header with username -->
+          <div class="modal-header">
+            <div class="modal-username">@{{ lists.username }}</div>
+          </div>
 
-        <!-- Image container with navigation -->
-        <div class="modal-images-container">
-          <!-- Close button (inside image) -->
-          <button class="close-button" aria-label="Close">&times;</button>
+          <!-- Image container with navigation -->
+          <div class="modal-images-container">
+            <!-- Close button (inside image) -->
+            <button class="close-button" aria-label="Close">&times;</button>
 
-          <!-- Navigation arrows for image carousel (inside image) -->
-          <button class="modal-nav modal-nav-prev" aria-label="Previous image">
-            <svg viewBox="0 0 24 24" width="24" height="24">
-              <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z" fill="white" />
-            </svg>
-          </button>
-
-          <button class="modal-nav modal-nav-next" aria-label="Next image">
-            <svg viewBox="0 0 24 24" width="24" height="24">
-              <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="white" />
-            </svg>
-          </button>
-
-          {% for media in post.images.value %}
-            <div class="modal-slide" data-slide-index="{{ forloop.index0 }}">
-              {% if media.sources %}
-                <video class="modal-media" controls playsinline>
-                  {% for source in media.sources %}
-                    <source src="{{ source.url }}" type="{{ source.mime_type }}">
-                  {% endfor %}
-                </video>
-              {% else %}
-                <img
-                  class="modal-media"
-                  src="{{ media | image_url: width: 800 }}"
-                  srcset="{{ media | image_url: width: 600 }} 600w,
-                          {{ media | image_url: width: 800 }} 800w,
-                          {{ media | image_url: width: 1200 }} 1200w"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 800px"
-                  alt="Instagram post {{ forloop.index }}"
-                  width="800"
-                  height="800"
-                  loading="lazy"
-                  decoding="async"
-                >
-              {% endif %}
-            </div>
-          {% endfor %}
-
-          <!-- Image indicators (dots) -->
-          {% if post.images.value.size > 1 %}
-            <div class="modal-indicators">
-              {% for media in post.images.value %}
-                <div class="indicator-dot" data-indicator-index="{{ forloop.index0 }}"></div>
-              {% endfor %}
-            </div>
-          {% endif %}
-        </div>
-
-        <!-- Details box below image -->
-        <div class="details-box">
-          <svg width="48px" height="48px" fill="#ffffffff" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-            <g id="SVGRepo_bgCarrier" stroke-width="2"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><title></title><path d="M44,57H20A13,13,0,0,1,7,44V20A13,13,0,0,1,20,7H44A13,13,0,0,1,57,20V44A13,13,0,0,1,44,57ZM20,9A11,11,0,0,0,9,20V44A11,11,0,0,0,20,55H44A11,11,0,0,0,55,44V20A11,11,0,0,0,44,9Z"></path><path d="M32,43.67A11.67,11.67,0,1,1,43.67,32,11.68,11.68,0,0,1,32,43.67Zm0-21.33A9.67,9.67,0,1,0,41.67,32,9.68,9.68,0,0,0,32,22.33Z"></path><path d="M44.5,21A3.5,3.5,0,1,1,48,17.5,3.5,3.5,0,0,1,44.5,21Zm0-5A1.5,1.5,0,1,0,46,17.5,1.5,1.5,0,0,0,44.5,16Z"></path></g>
-          </svg>
-          <div class="post-stats-row">
-            <span class="stat-item">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            <!-- Navigation arrows for image carousel (inside image) -->
+            <button class="modal-nav modal-nav-prev" aria-label="Previous image">
+              <svg viewBox="0 0 24 24" width="24" height="24">
+                <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z" fill="white" />
               </svg>
-              {{ post.likes.value }}
-            </span>
-            <span class="stat-item">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
-              </svg>
-              {{ post.comments.value }}
-            </span>
-          </div>
-          <div class="post-caption">
-            <strong>@{{ lists.username }}</strong> {{ post.caption.value }}
-          </div>
-        </div>
+            </button>
 
-        <!-- Post navigation footer -->
-        <div class="modal-footer">
-          <button class="footer-nav footer-nav-prev" aria-label="Previous post">&lt; Post</button>
-          <div class="post-counter">
-            <span class="current-post">{{ forloop.index }}</span> / {{ lists.posts.value.size }}
+            <button class="modal-nav modal-nav-next" aria-label="Next image">
+              <svg viewBox="0 0 24 24" width="24" height="24">
+                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="white" />
+              </svg>
+            </button>
+
+            {% for media in post.images.value %}
+              <div class="modal-slide" data-slide-index="{{ forloop.index0 }}">
+                {% if media.sources %}
+                  {% comment %}
+                    Video sources are from Shopify Files API (already on Shopify CDN)
+                    Theme Check warning can be ignored - these are not remote assets
+                  {% endcomment %}
+                  <video class="modal-media" controls playsinline>
+                    {% for source in media.sources %}
+                      <source src="{{ source.url }}" type="{{ source.mime_type }}">
+                    {% endfor %}
+                  </video>
+                {% else %}
+                  <img
+                    class="modal-media"
+                    src="{{ media | image_url: width: 800 }}"
+                    srcset="
+                      {{ media | image_url: width: 600 }} 600w,
+                      {{ media | image_url: width: 800 }} 800w,
+                      {{ media | image_url: width: 1200 }} 1200w
+                    "
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 800px"
+                    alt="Instagram post {{ forloop.index }}"
+                    width="800"
+                    height="800"
+                    loading="lazy"
+                    decoding="async"
+                  >
+                {% endif %}
+              </div>
+            {% endfor %}
+
+            <!-- Image indicators (dots) -->
+            {% if post.images.value.size > 1 %}
+              <div class="modal-indicators">
+                {% for media in post.images.value %}
+                  <div class="indicator-dot" data-indicator-index="{{ forloop.index0 }}"></div>
+                {% endfor %}
+              </div>
+            {% endif %}
           </div>
-          <button class="footer-nav footer-nav-next" aria-label="Next post">Next Post &gt;</button>
+
+          <!-- Details box below image -->
+          <div class="details-box">
+            <svg width="48px" height="48px" fill="#ffffffff" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+              <g id="SVGRepo_bgCarrier" stroke-width="2"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><title></title><path d="M44,57H20A13,13,0,0,1,7,44V20A13,13,0,0,1,20,7H44A13,13,0,0,1,57,20V44A13,13,0,0,1,44,57ZM20,9A11,11,0,0,0,9,20V44A11,11,0,0,0,20,55H44A11,11,0,0,0,55,44V20A11,11,0,0,0,44,9Z"></path><path d="M32,43.67A11.67,11.67,0,1,1,43.67,32,11.68,11.68,0,0,1,32,43.67Zm0-21.33A9.67,9.67,0,1,0,41.67,32,9.68,9.68,0,0,0,32,22.33Z"></path><path d="M44.5,21A3.5,3.5,0,1,1,48,17.5,3.5,3.5,0,0,1,44.5,21Zm0-5A1.5,1.5,0,1,0,46,17.5,1.5,1.5,0,0,0,44.5,16Z"></path></g>
+            </svg>
+            <div class="post-stats-row">
+              <span class="stat-item">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+                {{ post.likes.value }}
+              </span>
+              <span class="stat-item">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+                </svg>
+                {{ post.comments.value }}
+              </span>
+            </div>
+            <div class="post-caption">
+              <strong>@{{ lists.username }}</strong> {{ post.caption.value }}
+            </div>
+          </div>
+
+          <!-- Post navigation footer -->
+          <div class="modal-footer">
+            <button class="footer-nav footer-nav-prev" aria-label="Previous post">&lt; Post</button>
+            <div class="post-counter">
+              <span class="current-post">{{ forloop.index }}</span> / {{ lists.posts.value.size }}
+            </div>
+            <button class="footer-nav footer-nav-next" aria-label="Next post">Next Post &gt;</button>
+          </div>
         </div>
-      </div>
-    {% endfor %}
+      {% endfor %}
     </div>
   </div>
 
@@ -190,538 +198,538 @@
     (function () {
       const modal = document.querySelector('.modal');
 
-    if (!modal) return;
+      if (!modal) return;
 
-    let currentPostIndex = 0;
-    let currentImageIndex = 0;
-    let currentPost = null;
-    let prevImageBtn = null;
-    let nextImageBtn = null;
-    let closeBtn = null;
-    let prevPostBtn = null;
-    let nextPostBtn = null;
-    let postCounter = null;
+      let currentPostIndex = 0;
+      let currentImageIndex = 0;
+      let currentPost = null;
+      let prevImageBtn = null;
+      let nextImageBtn = null;
+      let closeBtn = null;
+      let prevPostBtn = null;
+      let nextPostBtn = null;
+      let postCounter = null;
 
-    function showCurrentPost(direction = 0) {
-      const allPosts = modal.querySelectorAll('.modal-post');
+      function showCurrentPost(direction = 0) {
+        const allPosts = modal.querySelectorAll('.modal-post');
 
-      // FIRST: Instantly hide all posts and reset their state
-      allPosts.forEach((post) => {
-        post.style.transition = 'none';
-        post.style.display = 'none';
-        post.style.transform = 'none';
-        post.style.opacity = '0';
-      });
+        // FIRST: Instantly hide all posts and reset their state
+        allPosts.forEach((post) => {
+          post.style.transition = 'none';
+          post.style.display = 'none';
+          post.style.transform = 'none';
+          post.style.opacity = '0';
+        });
 
-      // SECOND: Get the current post and prepare it
-      currentPost = allPosts[currentPostIndex];
-      if (!currentPost) return;
+        // SECOND: Get the current post and prepare it
+        currentPost = allPosts[currentPostIndex];
+        if (!currentPost) return;
 
-      currentImageIndex = 0;
+        currentImageIndex = 0;
 
-      // Get navigation buttons for current post
-      prevImageBtn = currentPost.querySelector('.modal-nav-prev');
-      nextImageBtn = currentPost.querySelector('.modal-nav-next');
-      closeBtn = currentPost.querySelector('.close-button');
-      prevPostBtn = currentPost.querySelector('.footer-nav-prev');
-      nextPostBtn = currentPost.querySelector('.footer-nav-next');
-      postCounter = currentPost.querySelector('.post-counter');
+        // Get navigation buttons for current post
+        prevImageBtn = currentPost.querySelector('.modal-nav-prev');
+        nextImageBtn = currentPost.querySelector('.modal-nav-next');
+        closeBtn = currentPost.querySelector('.close-button');
+        prevPostBtn = currentPost.querySelector('.footer-nav-prev');
+        nextPostBtn = currentPost.querySelector('.footer-nav-next');
+        postCounter = currentPost.querySelector('.post-counter');
 
-      // Show the post
-      currentPost.style.display = 'block';
+        // Show the post
+        currentPost.style.display = 'block';
 
-      if (direction !== 0) {
-        // Set starting position for animation
-        currentPost.style.transform = `translateX(${direction > 0 ? '8%' : '-8%'})`;
-        currentPost.style.opacity = '0';
+        if (direction !== 0) {
+          // Set starting position for animation
+          currentPost.style.transform = `translateX(${direction > 0 ? '8%' : '-8%'})`;
+          currentPost.style.opacity = '0';
 
-        // Force browser to apply these styles
-        void currentPost.offsetHeight;
+          // Force browser to apply these styles
+          void currentPost.offsetHeight;
 
-        // Animate to final position
-        requestAnimationFrame(() => {
-          currentPost.style.transition = 'transform 0.25s ease-out, opacity 0.25s ease-out';
+          // Animate to final position
+          requestAnimationFrame(() => {
+            currentPost.style.transition = 'transform 0.25s ease-out, opacity 0.25s ease-out';
+            currentPost.style.transform = 'none';
+            currentPost.style.opacity = '1';
+          });
+        } else {
+          // No animation - just show immediately
           currentPost.style.transform = 'none';
           currentPost.style.opacity = '1';
-        });
-      } else {
-        // No animation - just show immediately
-        currentPost.style.transform = 'none';
-        currentPost.style.opacity = '1';
+        }
+
+        showCurrentImage();
+        updateNavButtons();
       }
 
-      showCurrentImage();
-      updateNavButtons();
-    }
+      function showCurrentImage(direction = 0) {
+        if (!currentPost) return;
 
-    function showCurrentImage(direction = 0) {
-      if (!currentPost) return;
+        const slides = currentPost.querySelectorAll('.modal-slide');
+        const dots = currentPost.querySelectorAll('.indicator-dot');
 
-      const slides = currentPost.querySelectorAll('.modal-slide');
-      const dots = currentPost.querySelectorAll('.indicator-dot');
+        // FIRST: Instantly hide all slides and reset their state
+        slides.forEach((slide) => {
+          slide.style.transition = 'none';
+          slide.style.display = 'none';
+          slide.style.transform = 'none';
+          slide.style.opacity = '0';
+        });
 
-      // FIRST: Instantly hide all slides and reset their state
-      slides.forEach((slide) => {
-        slide.style.transition = 'none';
-        slide.style.display = 'none';
-        slide.style.transform = 'none';
-        slide.style.opacity = '0';
-      });
+        // SECOND: Get the current slide and prepare it
+        const currentSlide = slides[currentImageIndex];
+        if (!currentSlide) return;
 
-      // SECOND: Get the current slide and prepare it
-      const currentSlide = slides[currentImageIndex];
-      if (!currentSlide) return;
+        // Show the slide
+        currentSlide.style.display = 'block';
 
-      // Show the slide
-      currentSlide.style.display = 'block';
+        if (direction !== 0) {
+          // Set starting position for animation
+          currentSlide.style.transform = `translateX(${direction > 0 ? '8%' : '-8%'})`;
+          currentSlide.style.opacity = '0';
 
-      if (direction !== 0) {
-        // Set starting position for animation
-        currentSlide.style.transform = `translateX(${direction > 0 ? '8%' : '-8%'})`;
-        currentSlide.style.opacity = '0';
+          // Force browser to apply these styles
+          void currentSlide.offsetHeight;
 
-        // Force browser to apply these styles
-        void currentSlide.offsetHeight;
-
-        // Animate to final position
-        requestAnimationFrame(() => {
-          currentSlide.style.transition = 'transform 0.25s ease-out, opacity 0.25s ease-out';
+          // Animate to final position
+          requestAnimationFrame(() => {
+            currentSlide.style.transition = 'transform 0.25s ease-out, opacity 0.25s ease-out';
+            currentSlide.style.transform = 'none';
+            currentSlide.style.opacity = '1';
+          });
+        } else {
+          // No animation - just show immediately
           currentSlide.style.transform = 'none';
           currentSlide.style.opacity = '1';
+        }
+
+        // Update dots
+        dots.forEach((dot, index) => {
+          dot.classList.toggle('active', index === currentImageIndex);
         });
-      } else {
-        // No animation - just show immediately
-        currentSlide.style.transform = 'none';
-        currentSlide.style.opacity = '1';
       }
 
-      // Update dots
-      dots.forEach((dot, index) => {
-        dot.classList.toggle('active', index === currentImageIndex);
-      });
-    }
-
-    function updateNavButtons() {
-      const allPosts = modal.querySelectorAll('.modal-post');
-      const slides = currentPost ? currentPost.querySelectorAll('.modal-slide') : [];
-
-      // Image navigation
-      if (prevImageBtn) {
-        prevImageBtn.style.display = slides.length > 1 && currentImageIndex > 0 ? 'flex' : 'none';
-      }
-      if (nextImageBtn) {
-        nextImageBtn.style.display = slides.length > 1 && currentImageIndex < slides.length - 1 ? 'flex' : 'none';
-      }
-
-      // Post navigation
-      if (prevPostBtn) {
-        prevPostBtn.disabled = currentPostIndex === 0;
-      }
-      if (nextPostBtn) {
-        nextPostBtn.disabled = currentPostIndex === allPosts.length - 1;
-      }
-    }
-
-    function openModal(postIndex) {
-      currentPostIndex = postIndex;
-      showCurrentPost();
-      modal.style.display = 'flex';
-      modal.setAttribute('aria-hidden', 'false');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeModal() {
-      modal.style.display = 'none';
-      modal.setAttribute('aria-hidden', 'true');
-      document.body.style.overflow = '';
-    }
-
-    // Card clicks
-    document.querySelectorAll('.instagram-card').forEach((card, index) => {
-      card.addEventListener('click', (e) => {
-        e.preventDefault();
-        openModal(index);
-      });
-    });
-
-    // Image navigation - use event delegation on modal
-    modal.addEventListener('click', (e) => {
-      // Close button
-      const closeTarget = e.target.closest('.close-button');
-      if (closeTarget) {
-        e.stopPropagation();
-        closeModal();
-        return;
-      }
-
-      // Image nav prev
-      const target = e.target.closest('.modal-nav-prev');
-      if (target && currentImageIndex > 0) {
-        e.stopPropagation();
-        currentImageIndex--;
-        showCurrentImage(1); // direction: 1 = right
-        updateNavButtons();
-        return;
-      }
-
-      // Image nav next
-      const nextTarget = e.target.closest('.modal-nav-next');
-      if (nextTarget) {
-        e.stopPropagation();
-        const slides = currentPost.querySelectorAll('.modal-slide');
-        if (currentImageIndex < slides.length - 1) {
-          currentImageIndex++;
-          showCurrentImage(-1); // direction: -1 = left
-          updateNavButtons();
-        }
-        return;
-      }
-
-      // Post nav prev
-      const prevPost = e.target.closest('.footer-nav-prev');
-      if (prevPost && !prevPost.disabled) {
-        e.stopPropagation();
-        if (currentPostIndex > 0) {
-          currentPostIndex--;
-          showCurrentPost(1); // direction: 1 = right (previous)
-        }
-        return;
-      }
-
-      // Post nav next
-      const nextPost = e.target.closest('.footer-nav-next');
-      if (nextPost && !nextPost.disabled) {
-        e.stopPropagation();
+      function updateNavButtons() {
         const allPosts = modal.querySelectorAll('.modal-post');
-        if (currentPostIndex < allPosts.length - 1) {
-          currentPostIndex++;
-          showCurrentPost(-1); // direction: -1 = left (next)
+        const slides = currentPost ? currentPost.querySelectorAll('.modal-slide') : [];
+
+        // Image navigation
+        if (prevImageBtn) {
+          prevImageBtn.style.display = slides.length > 1 && currentImageIndex > 0 ? 'flex' : 'none';
         }
-        return;
-      }
+        if (nextImageBtn) {
+          nextImageBtn.style.display = slides.length > 1 && currentImageIndex < slides.length - 1 ? 'flex' : 'none';
+        }
 
-      // Close on backdrop click
-      if (e.target === modal) closeModal();
-    });
-
-    window.addEventListener('keydown', (e) => {
-      if (modal.style.display === 'none') return;
-
-      if (e.key === 'Escape') {
-        closeModal();
-      } else if (e.key === 'ArrowLeft' && currentImageIndex > 0) {
-        currentImageIndex--;
-        showCurrentImage(1);
-        updateNavButtons();
-      } else if (e.key === 'ArrowRight') {
-        const slides = currentPost.querySelectorAll('.modal-slide');
-        if (currentImageIndex < slides.length - 1) {
-          currentImageIndex++;
-          showCurrentImage(-1);
-          updateNavButtons();
+        // Post navigation
+        if (prevPostBtn) {
+          prevPostBtn.disabled = currentPostIndex === 0;
+        }
+        if (nextPostBtn) {
+          nextPostBtn.disabled = currentPostIndex === allPosts.length - 1;
         }
       }
-    });
 
-    // Add swipe/drag functionality to modal images
-    let isDragging = false;
-    let dragStartX = 0;
-
-    modal.addEventListener('mousedown', (e) => {
-      // Only start drag on the image container
-      if (!e.target.closest('.modal-images-container')) return;
-      // Don't interfere with buttons
-      if (e.target.closest('.close-button, .modal-nav')) return;
-
-      isDragging = true;
-      dragStartX = e.pageX;
-      let hasMoved = false;
-      const currentSlide = currentPost.querySelector('.modal-slide[style*="display: block"]');
-
-      // Remove transitions during drag for immediate feedback
-      if (currentSlide) {
-        currentSlide.style.transition = 'none';
+      function openModal(postIndex) {
+        currentPostIndex = postIndex;
+        showCurrentPost();
+        modal.style.display = 'flex';
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
       }
 
-      const handleMouseMove = (moveEvent) => {
-        if (!isDragging) return;
-        const diff = moveEvent.pageX - dragStartX;
+      function closeModal() {
+        modal.style.display = 'none';
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
 
-        if (Math.abs(diff) > 10) {
-          hasMoved = true;
-          // Add visual feedback during drag with reduced movement
-          if (currentSlide) {
-            const translateAmount = diff * 0.3; // Reduced from 0.5 for subtler feedback
-            const opacityValue = Math.max(0.6, 1 - Math.abs(diff) / 800); // More subtle fade
-            currentSlide.style.transform = `translateX(${translateAmount}px)`;
-            currentSlide.style.opacity = `${opacityValue}`;
-          }
-        }
-      };
-
-      const handleMouseUp = (upEvent) => {
-        isDragging = false;
-        const diff = upEvent.pageX - dragStartX;
-
-        // Determine if we're navigating
-        const shouldNavigate = hasMoved && Math.abs(diff) > 50;
-
-        if (!shouldNavigate) {
-          // Just reset if no navigation
-          if (currentSlide) {
-            currentSlide.style.transition = 'transform 0.25s ease-out, opacity 0.25s ease-out';
-            currentSlide.style.transform = 'translateX(0)';
-            currentSlide.style.opacity = '1';
-          }
-        } else {
-          const allPosts = modal.querySelectorAll('.modal-post');
-          const slides = currentPost.querySelectorAll('.modal-slide');
-
-          if (diff > 0) {
-            // Swipe right (go to previous)
-            if (currentImageIndex > 0) {
-              currentImageIndex--;
-              showCurrentImage(1);
-              updateNavButtons();
-            } else if (currentPostIndex > 0) {
-              // Go to previous post
-              currentPostIndex--;
-              showCurrentPost(1); // direction: 1 = right (previous)
-            } else {
-              // Can't go back further, reset
-              if (currentSlide) {
-                currentSlide.style.transition = 'transform 0.25s ease-out, opacity 0.25s ease-out';
-                currentSlide.style.transform = 'translateX(0)';
-                currentSlide.style.opacity = '1';
-              }
-            }
-          } else {
-            // Swipe left (go to next)
-            if (currentImageIndex < slides.length - 1) {
-              currentImageIndex++;
-              showCurrentImage(-1);
-              updateNavButtons();
-            } else if (currentPostIndex < allPosts.length - 1) {
-              // Go to next post
-              currentPostIndex++;
-              showCurrentPost(-1); // direction: -1 = left (next)
-            } else {
-              // Can't go forward further, reset
-              if (currentSlide) {
-                currentSlide.style.transition = 'transform 0.25s ease-out, opacity 0.25s ease-out';
-                currentSlide.style.transform = 'translateX(0)';
-                currentSlide.style.opacity = '1';
-              }
-            }
-          }
-        }
-
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-      };
-
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-    });
-
-    // Add touch swipe support for mobile
-    let touchStartX = 0;
-    let touchEndX = 0;
-
-    modal.addEventListener(
-      'touchstart',
-      (e) => {
-        if (!e.target.closest('.modal-images-container')) return;
-        if (e.target.closest('.close-button, .modal-nav')) return;
-        touchStartX = e.changedTouches[0].screenX;
-      },
-      { passive: true }
-    );
-
-    modal.addEventListener(
-      'touchend',
-      (e) => {
-        if (!e.target.closest('.modal-images-container')) return;
-        if (e.target.closest('.close-button, .modal-nav')) return;
-
-        touchEndX = e.changedTouches[0].screenX;
-        const diff = touchEndX - touchStartX;
-
-        if (Math.abs(diff) > 50) {
-          const allPosts = modal.querySelectorAll('.modal-post');
-          const slides = currentPost.querySelectorAll('.modal-slide');
-
-          if (diff > 0) {
-            // Swipe right (go to previous)
-            if (currentImageIndex > 0) {
-              currentImageIndex--;
-              showCurrentImage(1);
-              updateNavButtons();
-            } else if (currentPostIndex > 0) {
-              // Go to previous post
-              currentPostIndex--;
-              showCurrentPost(1); // direction: 1 = right (previous)
-            }
-          } else {
-            // Swipe left (go to next)
-            if (currentImageIndex < slides.length - 1) {
-              currentImageIndex++;
-              showCurrentImage(-1);
-              updateNavButtons();
-            } else if (currentPostIndex < allPosts.length - 1) {
-              // Go to next post
-              currentPostIndex++;
-              showCurrentPost(-1); // direction: -1 = left (next)
-            }
-          }
-        }
-      },
-      { passive: true }
-    );
-  })();
-
-  // video click to toggle play/pause
-  document.querySelectorAll('.instagram-video').forEach((video) => {
-    video.addEventListener('click', function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-      this.paused ? this.play() : this.pause();
-    });
-  });
-
-  // scroll controls: click or Enter/Space to scroll the feed by one card
-  (function () {
-    const leftBtns = document.querySelectorAll('.scroll-left');
-    const rightBtns = document.querySelectorAll('.scroll-right');
-
-    function cardScrollAmount(container) {
-      const card = container.querySelector('.instagram-card');
-      if (!card) return Math.round(container.clientWidth * 0.6);
-      const gap = parseFloat(getComputedStyle(container).gap || 16);
-      return Math.round(card.offsetWidth + gap);
-    }
-
-    function attach(btns, dir) {
-      btns.forEach((btn) => {
-        const container = btn.closest('.instagram-feed');
-        if (!container) return;
-        btn.addEventListener('click', () => {
-          container.scrollBy({ left: dir * cardScrollAmount(container), behavior: 'smooth' });
-        });
-        btn.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            btn.click();
-          }
+      // Card clicks
+      document.querySelectorAll('.instagram-card').forEach((card, index) => {
+        card.addEventListener('click', (e) => {
+          e.preventDefault();
+          openModal(index);
         });
       });
-    }
 
-    attach(leftBtns, -1);
-    attach(rightBtns, 1);
-
-    // Add swipe/drag functionality to feed
-    document.querySelectorAll('.instagram-feed').forEach((container) => {
-      let isDown = false;
-      let startX;
-      let scrollLeft;
-      let hasMoved = false;
-
-      container.addEventListener('mousedown', (e) => {
-        // Don't interfere with button clicks
-        if (e.target.closest('.scroll-left, .scroll-right')) return;
-
-        isDown = true;
-        hasMoved = false;
-        container.style.cursor = 'grabbing';
-        container.style.userSelect = 'none';
-        startX = e.pageX - container.offsetLeft;
-        scrollLeft = container.scrollLeft;
-
-        // Prevent default drag behavior on images
-        e.preventDefault();
-      });
-
-      container.addEventListener('mouseleave', () => {
-        isDown = false;
-        container.style.cursor = 'grab';
-        container.style.userSelect = '';
-      });
-
-      container.addEventListener('mouseup', () => {
-        isDown = false;
-        container.style.cursor = 'grab';
-        container.style.userSelect = '';
-      });
-
-      container.addEventListener('mousemove', (e) => {
-        if (!isDown) return;
-        e.preventDefault();
-        const x = e.pageX - container.offsetLeft;
-        const walk = (x - startX) * 1; // Reduced scroll speed for smoother control
-
-        // If moved more than 5 pixels, it's a drag not a click
-        if (Math.abs(walk) > 5) {
-          hasMoved = true;
-        }
-
-        container.scrollLeft = scrollLeft - walk;
-      });
-
-      // Prevent card click if user was dragging
-      container.addEventListener(
-        'click',
-        (e) => {
-          if (hasMoved) {
-            e.preventDefault();
-            e.stopPropagation();
-            hasMoved = false;
-          }
-        },
-        true
-      );
-    });
-
-    // show/hide arrows and fades based on overflow and scroll position
-    function refreshHints() {
-      const containers = document.querySelectorAll('.instagram-feed');
-      containers.forEach((container) => {
-        const left = container.querySelector('.scroll-left');
-        const right = container.querySelector('.scroll-right');
-        const fadeL = container.querySelector('.fade-left');
-        const fadeR = container.querySelector('.fade-right');
-        if (!left || !right) return;
-        const canScroll = container.scrollWidth > container.clientWidth + 1;
-        if (!canScroll) {
-          left.style.display = 'none';
-          right.style.display = 'none';
-          fadeL && fadeL.classList.remove('fade-visible');
-          fadeR && fadeR.classList.remove('fade-visible');
+      // Image navigation - use event delegation on modal
+      modal.addEventListener('click', (e) => {
+        // Close button
+        const closeTarget = e.target.closest('.close-button');
+        if (closeTarget) {
+          e.stopPropagation();
+          closeModal();
           return;
         }
-        // Show/hide arrows based on scroll position
-        const scrollLeft = container.scrollLeft;
-        const maxScroll = container.scrollWidth - container.clientWidth - 1;
 
-        // Hide left arrow if at the start
-        left.style.display = scrollLeft <= 1 ? 'none' : '';
+        // Image nav prev
+        const target = e.target.closest('.modal-nav-prev');
+        if (target && currentImageIndex > 0) {
+          e.stopPropagation();
+          currentImageIndex--;
+          showCurrentImage(1); // direction: 1 = right
+          updateNavButtons();
+          return;
+        }
 
-        // Hide right arrow if at the end
-        right.style.display = scrollLeft >= maxScroll - 1 ? 'none' : '';
+        // Image nav next
+        const nextTarget = e.target.closest('.modal-nav-next');
+        if (nextTarget) {
+          e.stopPropagation();
+          const slides = currentPost.querySelectorAll('.modal-slide');
+          if (currentImageIndex < slides.length - 1) {
+            currentImageIndex++;
+            showCurrentImage(-1); // direction: -1 = left
+            updateNavButtons();
+          }
+          return;
+        }
 
-        if (fadeL) fadeL.classList.toggle('fade-visible', scrollLeft > 8);
-        if (fadeR) fadeR.classList.toggle('fade-visible', scrollLeft < maxScroll - 8);
+        // Post nav prev
+        const prevPost = e.target.closest('.footer-nav-prev');
+        if (prevPost && !prevPost.disabled) {
+          e.stopPropagation();
+          if (currentPostIndex > 0) {
+            currentPostIndex--;
+            showCurrentPost(1); // direction: 1 = right (previous)
+          }
+          return;
+        }
+
+        // Post nav next
+        const nextPost = e.target.closest('.footer-nav-next');
+        if (nextPost && !nextPost.disabled) {
+          e.stopPropagation();
+          const allPosts = modal.querySelectorAll('.modal-post');
+          if (currentPostIndex < allPosts.length - 1) {
+            currentPostIndex++;
+            showCurrentPost(-1); // direction: -1 = left (next)
+          }
+          return;
+        }
+
+        // Close on backdrop click
+        if (e.target === modal) closeModal();
       });
-    }
 
-    // attach events
-    window.addEventListener('resize', refreshHints);
-    document
-      .querySelectorAll('.instagram-feed')
-      .forEach((c) => c.addEventListener('scroll', refreshHints, { passive: true }));
-    // initial call
-    setTimeout(refreshHints, 120);
-  })();
+      window.addEventListener('keydown', (e) => {
+        if (modal.style.display === 'none') return;
+
+        if (e.key === 'Escape') {
+          closeModal();
+        } else if (e.key === 'ArrowLeft' && currentImageIndex > 0) {
+          currentImageIndex--;
+          showCurrentImage(1);
+          updateNavButtons();
+        } else if (e.key === 'ArrowRight') {
+          const slides = currentPost.querySelectorAll('.modal-slide');
+          if (currentImageIndex < slides.length - 1) {
+            currentImageIndex++;
+            showCurrentImage(-1);
+            updateNavButtons();
+          }
+        }
+      });
+
+      // Add swipe/drag functionality to modal images
+      let isDragging = false;
+      let dragStartX = 0;
+
+      modal.addEventListener('mousedown', (e) => {
+        // Only start drag on the image container
+        if (!e.target.closest('.modal-images-container')) return;
+        // Don't interfere with buttons
+        if (e.target.closest('.close-button, .modal-nav')) return;
+
+        isDragging = true;
+        dragStartX = e.pageX;
+        let hasMoved = false;
+        const currentSlide = currentPost.querySelector('.modal-slide[style*="display: block"]');
+
+        // Remove transitions during drag for immediate feedback
+        if (currentSlide) {
+          currentSlide.style.transition = 'none';
+        }
+
+        const handleMouseMove = (moveEvent) => {
+          if (!isDragging) return;
+          const diff = moveEvent.pageX - dragStartX;
+
+          if (Math.abs(diff) > 10) {
+            hasMoved = true;
+            // Add visual feedback during drag with reduced movement
+            if (currentSlide) {
+              const translateAmount = diff * 0.3; // Reduced from 0.5 for subtler feedback
+              const opacityValue = Math.max(0.6, 1 - Math.abs(diff) / 800); // More subtle fade
+              currentSlide.style.transform = `translateX(${translateAmount}px)`;
+              currentSlide.style.opacity = `${opacityValue}`;
+            }
+          }
+        };
+
+        const handleMouseUp = (upEvent) => {
+          isDragging = false;
+          const diff = upEvent.pageX - dragStartX;
+
+          // Determine if we're navigating
+          const shouldNavigate = hasMoved && Math.abs(diff) > 50;
+
+          if (!shouldNavigate) {
+            // Just reset if no navigation
+            if (currentSlide) {
+              currentSlide.style.transition = 'transform 0.25s ease-out, opacity 0.25s ease-out';
+              currentSlide.style.transform = 'translateX(0)';
+              currentSlide.style.opacity = '1';
+            }
+          } else {
+            const allPosts = modal.querySelectorAll('.modal-post');
+            const slides = currentPost.querySelectorAll('.modal-slide');
+
+            if (diff > 0) {
+              // Swipe right (go to previous)
+              if (currentImageIndex > 0) {
+                currentImageIndex--;
+                showCurrentImage(1);
+                updateNavButtons();
+              } else if (currentPostIndex > 0) {
+                // Go to previous post
+                currentPostIndex--;
+                showCurrentPost(1); // direction: 1 = right (previous)
+              } else {
+                // Can't go back further, reset
+                if (currentSlide) {
+                  currentSlide.style.transition = 'transform 0.25s ease-out, opacity 0.25s ease-out';
+                  currentSlide.style.transform = 'translateX(0)';
+                  currentSlide.style.opacity = '1';
+                }
+              }
+            } else {
+              // Swipe left (go to next)
+              if (currentImageIndex < slides.length - 1) {
+                currentImageIndex++;
+                showCurrentImage(-1);
+                updateNavButtons();
+              } else if (currentPostIndex < allPosts.length - 1) {
+                // Go to next post
+                currentPostIndex++;
+                showCurrentPost(-1); // direction: -1 = left (next)
+              } else {
+                // Can't go forward further, reset
+                if (currentSlide) {
+                  currentSlide.style.transition = 'transform 0.25s ease-out, opacity 0.25s ease-out';
+                  currentSlide.style.transform = 'translateX(0)';
+                  currentSlide.style.opacity = '1';
+                }
+              }
+            }
+          }
+
+          document.removeEventListener('mousemove', handleMouseMove);
+          document.removeEventListener('mouseup', handleMouseUp);
+        };
+
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+      });
+
+      // Add touch swipe support for mobile
+      let touchStartX = 0;
+      let touchEndX = 0;
+
+      modal.addEventListener(
+        'touchstart',
+        (e) => {
+          if (!e.target.closest('.modal-images-container')) return;
+          if (e.target.closest('.close-button, .modal-nav')) return;
+          touchStartX = e.changedTouches[0].screenX;
+        },
+        { passive: true }
+      );
+
+      modal.addEventListener(
+        'touchend',
+        (e) => {
+          if (!e.target.closest('.modal-images-container')) return;
+          if (e.target.closest('.close-button, .modal-nav')) return;
+
+          touchEndX = e.changedTouches[0].screenX;
+          const diff = touchEndX - touchStartX;
+
+          if (Math.abs(diff) > 50) {
+            const allPosts = modal.querySelectorAll('.modal-post');
+            const slides = currentPost.querySelectorAll('.modal-slide');
+
+            if (diff > 0) {
+              // Swipe right (go to previous)
+              if (currentImageIndex > 0) {
+                currentImageIndex--;
+                showCurrentImage(1);
+                updateNavButtons();
+              } else if (currentPostIndex > 0) {
+                // Go to previous post
+                currentPostIndex--;
+                showCurrentPost(1); // direction: 1 = right (previous)
+              }
+            } else {
+              // Swipe left (go to next)
+              if (currentImageIndex < slides.length - 1) {
+                currentImageIndex++;
+                showCurrentImage(-1);
+                updateNavButtons();
+              } else if (currentPostIndex < allPosts.length - 1) {
+                // Go to next post
+                currentPostIndex++;
+                showCurrentPost(-1); // direction: -1 = left (next)
+              }
+            }
+          }
+        },
+        { passive: true }
+      );
+    })();
+
+    // video click to toggle play/pause
+    document.querySelectorAll('.instagram-video').forEach((video) => {
+      video.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.paused ? this.play() : this.pause();
+      });
+    });
+
+    // scroll controls: click or Enter/Space to scroll the feed by one card
+    (function () {
+      const leftBtns = document.querySelectorAll('.scroll-left');
+      const rightBtns = document.querySelectorAll('.scroll-right');
+
+      function cardScrollAmount(container) {
+        const card = container.querySelector('.instagram-card');
+        if (!card) return Math.round(container.clientWidth * 0.6);
+        const gap = parseFloat(getComputedStyle(container).gap || 16);
+        return Math.round(card.offsetWidth + gap);
+      }
+
+      function attach(btns, dir) {
+        btns.forEach((btn) => {
+          const container = btn.closest('.instagram-feed');
+          if (!container) return;
+          btn.addEventListener('click', () => {
+            container.scrollBy({ left: dir * cardScrollAmount(container), behavior: 'smooth' });
+          });
+          btn.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              btn.click();
+            }
+          });
+        });
+      }
+
+      attach(leftBtns, -1);
+      attach(rightBtns, 1);
+
+      // Add swipe/drag functionality to feed
+      document.querySelectorAll('.instagram-feed').forEach((container) => {
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+        let hasMoved = false;
+
+        container.addEventListener('mousedown', (e) => {
+          // Don't interfere with button clicks
+          if (e.target.closest('.scroll-left, .scroll-right')) return;
+
+          isDown = true;
+          hasMoved = false;
+          container.style.cursor = 'grabbing';
+          container.style.userSelect = 'none';
+          startX = e.pageX - container.offsetLeft;
+          scrollLeft = container.scrollLeft;
+
+          // Prevent default drag behavior on images
+          e.preventDefault();
+        });
+
+        container.addEventListener('mouseleave', () => {
+          isDown = false;
+          container.style.cursor = 'grab';
+          container.style.userSelect = '';
+        });
+
+        container.addEventListener('mouseup', () => {
+          isDown = false;
+          container.style.cursor = 'grab';
+          container.style.userSelect = '';
+        });
+
+        container.addEventListener('mousemove', (e) => {
+          if (!isDown) return;
+          e.preventDefault();
+          const x = e.pageX - container.offsetLeft;
+          const walk = (x - startX) * 1; // Reduced scroll speed for smoother control
+
+          // If moved more than 5 pixels, it's a drag not a click
+          if (Math.abs(walk) > 5) {
+            hasMoved = true;
+          }
+
+          container.scrollLeft = scrollLeft - walk;
+        });
+
+        // Prevent card click if user was dragging
+        container.addEventListener(
+          'click',
+          (e) => {
+            if (hasMoved) {
+              e.preventDefault();
+              e.stopPropagation();
+              hasMoved = false;
+            }
+          },
+          true
+        );
+      });
+
+      // show/hide arrows and fades based on overflow and scroll position
+      function refreshHints() {
+        const containers = document.querySelectorAll('.instagram-feed');
+        containers.forEach((container) => {
+          const left = container.querySelector('.scroll-left');
+          const right = container.querySelector('.scroll-right');
+          const fadeL = container.querySelector('.fade-left');
+          const fadeR = container.querySelector('.fade-right');
+          if (!left || !right) return;
+          const canScroll = container.scrollWidth > container.clientWidth + 1;
+          if (!canScroll) {
+            left.style.display = 'none';
+            right.style.display = 'none';
+            fadeL && fadeL.classList.remove('fade-visible');
+            fadeR && fadeR.classList.remove('fade-visible');
+            return;
+          }
+          // Show/hide arrows based on scroll position
+          const scrollLeft = container.scrollLeft;
+          const maxScroll = container.scrollWidth - container.clientWidth - 1;
+
+          // Hide left arrow if at the start
+          left.style.display = scrollLeft <= 1 ? 'none' : '';
+
+          // Hide right arrow if at the end
+          right.style.display = scrollLeft >= maxScroll - 1 ? 'none' : '';
+
+          if (fadeL) fadeL.classList.toggle('fade-visible', scrollLeft > 8);
+          if (fadeR) fadeR.classList.toggle('fade-visible', scrollLeft < maxScroll - 8);
+        });
+      }
+
+      // attach events
+      window.addEventListener('resize', refreshHints);
+      document
+        .querySelectorAll('.instagram-feed')
+        .forEach((c) => c.addEventListener('scroll', refreshHints, { passive: true }));
+      // initial call
+      setTimeout(refreshHints, 120);
+    })();
   </script>
 {% endif %}
 

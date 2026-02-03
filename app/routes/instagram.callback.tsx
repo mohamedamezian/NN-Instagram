@@ -1,5 +1,6 @@
 import type { LoaderFunctionArgs } from "react-router";
 import prisma from "../db.server";
+import { encryptToken } from "../utils/encryption.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
@@ -83,14 +84,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           },
         },
         update: {
-          accessToken: finalToken,
+          accessToken: encryptToken(finalToken), // Encrypt token before storing
           userId: instagramBusinessAccountId || data.user_id?.toString(),
           expiresAt: expiresAt,
         },
         create: {
           shop: shop,
           provider: "instagram",
-          accessToken: finalToken,
+          accessToken: encryptToken(finalToken), // Encrypt token before storing
           userId: instagramBusinessAccountId || data.user_id?.toString(),
           expiresAt: expiresAt,
         },

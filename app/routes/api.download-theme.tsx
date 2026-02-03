@@ -162,10 +162,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         "Content-Type": "application/zip",
         "Content-Disposition": "attachment; filename=nn-instagram-theme.zip",
         "Content-Length": zipBuffer.length.toString(),
-        // Cache for 1 hour (theme files don't change often)
-        "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
-        // Enable compression
-        "Content-Encoding": "gzip",
       },
     });
   } catch (error) {

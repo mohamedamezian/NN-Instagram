@@ -10,15 +10,15 @@ import {
   deleteOldAccountData,
 } from "../utils/instagram-sync.server";
 import {
-  getInstagramAccount,
+  getInstagramAccountWithToken,
   updateAccountUsername,
 } from "../utils/account.server";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const { session, admin } = await authenticate.admin(request);
 
-  // Get Instagram account from database using centralized function
-  const account = await getInstagramAccount(session.shop);
+  // Get Instagram account from database with decrypted token
+  const account = await getInstagramAccountWithToken(session.shop);
 
   if (!account) {
     return { error: "No Instagram account connected" };

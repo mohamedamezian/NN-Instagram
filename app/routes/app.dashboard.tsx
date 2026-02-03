@@ -27,12 +27,12 @@ import {
   handleDisconnectAction,
   handleAddToThemeAction,
 } from "../utils/actions.server";
-import { getInstagramAccount } from "../utils/account.server";
+import { getInstagramAccountWithToken } from "../utils/account.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { session, admin } = await authenticate.admin(request);
 
-  const socialAccount = await getInstagramAccount(session.shop);
+  const socialAccount = await getInstagramAccountWithToken(session.shop);
 
   let instagramAccount: InstagramAccount | null = null;
   let syncStats = {
@@ -56,7 +56,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   const themePages = await getThemePages(admin);
   const appBlockStatus = await checkAppBlockInstallation(admin);
-  
+
   // Defer loading Instagram posts - only load first 6 for initial render
   // This implements the PRPL pattern (defer non-critical resources)
   const instagramPosts = socialAccount
@@ -1473,11 +1473,5 @@ export default function Index() {
 }
 
 export const headers: HeadersFunction = (headersArgs) => {
-  const headers = boundary.headers(headersArgs);
-  
-  // Add cache headers for dashboard data
-  // Cache for 2 minutes, allowing stale content while revalidating
-  headers.set('Cache-Control', 'private, max-age=120, stale-while-revalidate=300');
-  
-  return headers;
+  return boundary.headers(headersArgs);
 };
