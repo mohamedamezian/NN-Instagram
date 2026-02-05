@@ -31,7 +31,7 @@ CREATE TABLE "social_account" (
     "expiresAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-
+    "username" TEXT,
     CONSTRAINT "social_account_pkey" PRIMARY KEY ("id")
 );
 

@@ -59,8 +59,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       ? new Date(Date.now() + longLivedData.expires_in * 1000)
       : new Date(Date.now() + 60 * 24 * 60 * 60 * 1000); // 60 days default
 
-    // For Instagram Business API, fetch the Instagram Business Account ID
+    // For Instagram Business API, fetch the Instagram Business Account ID and username
     let instagramBusinessAccountId: string | null = null;
+    let instagramUsername: string | null = null;
     try {
       const meResponse = await fetch(
         `https://graph.instagram.com/me?fields=id,username,account_type&access_token=${finalToken}`
@@ -69,6 +70,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       
       if (meData.id) {
         instagramBusinessAccountId = meData.id;
+      }
+      if (meData.username) {
+        instagramUsername = meData.username;
       }
     } catch (meError) {
       console.error("Failed to fetch Instagram Business Account info:", meError);
@@ -86,6 +90,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         update: {
           accessToken: encryptToken(finalToken), // Encrypt token before storing
           userId: instagramBusinessAccountId || data.user_id?.toString(),
+          username: instagramUsername, // Store username for account tracking
           expiresAt: expiresAt,
         },
         create: {
@@ -93,6 +98,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           provider: "instagram",
           accessToken: encryptToken(finalToken), // Encrypt token before storing
           userId: instagramBusinessAccountId || data.user_id?.toString(),
+          username: instagramUsername, // Store username for account tracking
           expiresAt: expiresAt,
         },
       });

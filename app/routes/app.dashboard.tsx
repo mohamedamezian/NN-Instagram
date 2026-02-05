@@ -57,8 +57,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const themePages = await getThemePages(admin);
   const appBlockStatus = await checkAppBlockInstallation(admin);
 
-  // Defer loading Instagram posts - only load first 6 for initial render
-  // This implements the PRPL pattern (defer non-critical resources)
+  // Load Instagram posts for preview - fetch up to 24 posts (max slider value)
   const instagramPosts = socialAccount
     ? await getInstagramPostsForPreview(admin, 6)
     : [];
@@ -1298,7 +1297,7 @@ export default function Index() {
                         className="hide-scrollbar"
                       >
                         {instagramPosts
-                          .slice(0, previewDevice === "desktop" ? 4 : 3)
+                          .slice(0, designSettings.postsLimit)
                           .map((post: any) => (
                             <div
                               key={post.id}
