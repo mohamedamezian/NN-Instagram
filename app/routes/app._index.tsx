@@ -391,9 +391,7 @@ export default function Index() {
                   {isSetupComplete && !hasErrors && (
                     <s-banner tone="success">
                       <s-stack gap="small-200">
-                        <s-text type="strong">
-                          ✓ The app is ready to use!
-                        </s-text>
+                        <s-text type="strong">The app is ready to use!</s-text>
                         <s-text>
                           All required metaobject definitions have been created
                           successfully. You can now connect your Instagram

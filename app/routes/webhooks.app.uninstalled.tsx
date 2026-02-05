@@ -5,94 +5,43 @@ import db from "../db.server";
 export const action = async ({ request }: ActionFunctionArgs) => {
   try {
     // authenticate.webhook() automatically validates HMAC signature
-    const { shop, session, admin } = await authenticate.webhook(request);
+    const { topic, payload } = await authenticate.webhook(request);
 
-    // Delete Instagram files and metaobject definitions
-    if (admin) {
-      try {
-        // Delete files with alt text starting with instagram-post_
-        const filesQuery = await admin.graphql(`
-        query {
-          files(first: 100, query: "alt:instagram-post_") {
-            edges { node { id } }
-          }
-        }
-      `);
-        const filesJson = await filesQuery.json();
-        const fileIds = filesJson.data.files.edges.map(
-          (e: { node: { id: string } }) => e.node.id,
-        );
+    console.log(`Received webhook: ${topic}`);
 
-        if (fileIds.length > 0) {
-          await admin.graphql(
-            `
-          mutation fileDelete($fileIds: [ID!]!) {
-            fileDelete(fileIds: $fileIds) {
-              deletedFileIds
-              userErrors { field message }
-            }
-          }
-        `,
-            {
-              variables: { fileIds },
-            },
-          );
-        }
+    // Extract shop from payload
+    const webhookPayload = payload as {
+      id?: number;
+      shop_domain?: string;
+    };
 
-        // Find the definition IDs
-        const definitionsQuery = await admin.graphql(`
-        query {
-          metaobjectDefinitions(first: 10) {
-            nodes {
-              id
-              type
-            }
-          }
-        }
-      `);
+    const shop = webhookPayload.shop_domain;
 
-        const definitionsData = await definitionsQuery.json();
-        const definitions = definitionsData.data.metaobjectDefinitions.nodes;
-
-        // Find and delete nn_instagram_post and nn_instagram_list definitions
-        const instagramDefinitions = definitions.filter(
-          (def: { type: string }) =>
-            def.type === "nn_instagram_post" ||
-            def.type === "nn_instagram_list",
-        );
-
-        for (const definition of instagramDefinitions) {
-          await admin.graphql(
-            `
-          mutation deleteDefinition($id: ID!) {
-            metaobjectDefinitionDelete(id: $id) {
-              deletedId
-              userErrors {
-                field
-                message
-              }
-            }
-          }
-        `,
-            {
-              variables: { id: definition.id },
-            },
-          );
-        }
-      } catch (error) {
-        console.error(`Failed to delete Instagram data for ${shop}:`, error);
-      }
+    if (!shop) {
+      console.error("No shop domain found in webhook payload");
+      return new Response(null, { status: 200 });
     }
 
+    console.log(`Processing app uninstall for shop: ${shop}`);
+
+    // Clean up database records
     // Webhook requests can trigger multiple times and after an app has already been uninstalled.
     // If this webhook already ran, the session may have been deleted previously.
-    if (session) {
-      await db.session.deleteMany({ where: { shop } });
+    try {
+      const deletedSessions = await db.session.deleteMany({ where: { shop } });
+      console.log(`Deleted ${deletedSessions.count} sessions for ${shop}`);
+    } catch (error) {
+      console.error(`Failed to delete sessions for ${shop}:`, error);
     }
 
     // Clean up social media data for compliance
     try {
-      await db.socialAccount.deleteMany({ where: { shop } });
+      const deletedAccounts = await db.socialAccount.deleteMany({
+        where: { shop },
+      });
+      console.log(
+        `Deleted ${deletedAccounts.count} social accounts for ${shop}`,
+      );
     } catch (error) {
       console.error(`Failed to clean up social accounts for ${shop}:`, error);
     }
@@ -109,6 +58,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     }
 
     // For other errors, return 200 to prevent retries
+    // Shopify will retry webhooks that don't return 200
     return new Response(null, { status: 200 });
   }
 };

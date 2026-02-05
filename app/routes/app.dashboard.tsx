@@ -171,7 +171,7 @@ export default function Index() {
           data.deletedFiles !== undefined
         ) {
           setDeleteMessage(
-            `✓ Successfully deleted ${data.deletedMetaobjects} metaobjects and ${data.deletedFiles} files`,
+            `Successfully deleted ${data.deletedMetaobjects} metaobjects and ${data.deletedFiles} files`,
           );
 
           setTimeout(() => {

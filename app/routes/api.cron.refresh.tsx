@@ -23,7 +23,7 @@ export const loader = async ({}: LoaderFunctionArgs) => {
     for (const token of currentIgToken) {
       // Decrypt token before using it in API call
       const decryptedToken = decryptToken(token.accessToken);
-      
+
       const res = await fetch(
         `${refreshUrl}?grant_type=ig_refresh_token&access_token=${decryptedToken}`,
         {
