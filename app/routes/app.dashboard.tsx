@@ -169,9 +169,7 @@ export default function Index() {
           data.deletedMetaobjects !== undefined &&
           data.deletedFiles !== undefined
         ) {
-          setDeleteMessage(
-            `Successfully deleted ${data.deletedMetaobjects} metaobjects and ${data.deletedFiles} files`,
-          );
+          setDeleteMessage(`Successfully disconnected your Instagram account.`);
 
           setTimeout(() => {
             setDeleteMessage("");
@@ -276,7 +274,7 @@ export default function Index() {
   const handleDisconnect = () => {
     if (
       confirm(
-        "Are you sure you want to disconnect your Instagram account? This will delete all synced data and cannot be undone.",
+        "Are you sure you want to disconnect your Instagram account? Make sure to delete all synced data first.",
       )
     ) {
       const formData = new FormData();
@@ -350,7 +348,7 @@ export default function Index() {
     current: boolean;
     action: () => void;
     actionLabel: string;
-    iconType: "social-post" | "refresh" | "theme";
+    icon: "social-post" | "refresh" | "theme";
     disabled?: boolean;
     optional?: boolean;
   };
@@ -365,7 +363,7 @@ export default function Index() {
       current: !isConnected,
       action: handleConnect,
       actionLabel: "Connect Account",
-      iconType: "social-post" as const,
+      icon: "social-post" as const,
     },
     {
       id: 2,
@@ -376,7 +374,7 @@ export default function Index() {
       current: isConnected && !hasPosts,
       action: handleSync,
       actionLabel: "Sync Now",
-      iconType: "refresh" as const,
+      icon: "refresh" as const,
       disabled: !isConnected,
     },
   ];
@@ -391,7 +389,7 @@ export default function Index() {
       current: false,
       action: handleAddToTheme,
       actionLabel: "Add to Theme",
-      iconType: "theme" as const,
+      icon: "theme" as const,
       disabled: !isConnected || !hasPosts,
       optional: true,
     },
@@ -404,7 +402,7 @@ export default function Index() {
       current: false,
       action: handleRefresh,
       actionLabel: "Refresh",
-      iconType: "refresh" as const,
+      icon: "refresh" as const,
       optional: true,
     },
   ];
@@ -416,19 +414,22 @@ export default function Index() {
   return (
     <s-page>
       {isConnected && (
-        <s-section>
-          <s-banner tone="info">
-            <s-stack gap="small-100">
-              <s-text type="strong">Instagram API Integration Active</s-text>
-              <s-text>
-                This app uses the Instagram Basic Display API to fetch and sync
-                your Instagram posts to your Shopify store. Posts are
-                automatically synced every 24 hours, or you can manually sync
-                anytime using the "Sync Now" button below.
-              </s-text>
-            </s-stack>
+        <s-banner heading="Instagram API Integration Active" tone="info">
+          This app uses the Instagram Basic Display API to fetch and sync your
+          Instagram posts to your Shopify store. Posts are automatically synced
+          every 24 hours, or you can manually sync anytime using the "Sync Now"
+          button below.
+        </s-banner>
+      )}
+
+      {completedSteps === steps.length && (
+        <>
+          <s-divider />
+          <s-banner heading="🎉 All set up!" tone="success" dismissible>
+            Your Instagram feed is now synced and ready to display on your
+            store.
           </s-banner>
-        </s-section>
+        </>
       )}
 
       <s-section>
@@ -482,7 +483,7 @@ export default function Index() {
                         <s-icon type="check" tone="success" />
                       ) : (
                         <s-icon
-                          type={step.iconType}
+                          type={step.icon}
                           tone={step.current ? "info" : undefined}
                         />
                       )}
@@ -545,9 +546,7 @@ export default function Index() {
                                             isInstalled ? "success" : "neutral"
                                           }
                                         >
-                                          {isInstalled
-                                            ? "✓ Active"
-                                            : "Inactive"}
+                                          {isInstalled ? "Active" : "Inactive"}
                                         </s-badge>
                                       </s-stack>
                                     </s-clickable>
@@ -555,6 +554,8 @@ export default function Index() {
                                 })}
                                 <s-button
                                   onClick={() => setShowPageModal(false)}
+                                  icon="exit"
+                                  tone="critical"
                                 >
                                   Cancel
                                 </s-button>
@@ -580,21 +581,6 @@ export default function Index() {
                 </s-box>
               ))}
             </s-stack>
-
-            {completedSteps === steps.length && (
-              <>
-                <s-divider />
-                <s-banner tone="success">
-                  <s-stack gap="small-200">
-                    <s-text type="strong">🎉 All set up!</s-text>
-                    <s-text>
-                      Your Instagram feed is now synced and ready to display on
-                      your store.
-                    </s-text>
-                  </s-stack>
-                </s-banner>
-              </>
-            )}
           </s-stack>
         </s-card>
       </s-section>
@@ -602,7 +588,7 @@ export default function Index() {
       {deleteMessage && (
         <s-section>
           <s-banner tone="success" onDismiss={() => setDeleteMessage("")}>
-            {deleteMessage}
+            <s-text>{deleteMessage}</s-text>
           </s-banner>
         </s-section>
       )}
@@ -613,7 +599,7 @@ export default function Index() {
             tone="success"
             onDismiss={() => setConnectSuccessMessage("")}
           >
-            {connectSuccessMessage}
+            <s-text>{connectSuccessMessage}</s-text>
           </s-banner>
         </s-section>
       )}
@@ -627,6 +613,7 @@ export default function Index() {
                 <s-stack direction="inline" gap="small-200">
                   <s-text>📸 {syncStats.postsCount} posts synced</s-text>
                   <s-text>
+                    <s-icon type="image"></s-icon>
                     🖼️ {syncStats.filesCount} media files uploaded
                   </s-text>
                 </s-stack>
@@ -642,15 +629,10 @@ export default function Index() {
 
       {isConnected && (
         <s-section>
-          <s-banner tone="info">
-            Your Instagram posts sync automatically every 24 hours. Use the
-            "Sync Now" button above to manually fetch the latest posts.
-          </s-banner>
           <s-card>
             <s-stack gap="base">
               <s-stack gap="small-500">
                 <s-heading>Instagram Sync</s-heading>
-
                 <s-text color="subdued">
                   Fetch and sync your latest Instagram posts to Shopify
                 </s-text>
@@ -744,12 +726,17 @@ export default function Index() {
                   <s-button
                     onClick={handleConnect}
                     disabled={isSyncing || isActionRunning}
+                    variant="primary"
+                    tone="auto"
+                    icon="connect"
                   >
                     Switch Account
                   </s-button>
                   <s-button
                     onClick={handleDeleteData}
+                    variant="secondary"
                     tone="critical"
+                    icon="delete"
                     loading={
                       fetcher.state === "submitting" &&
                       fetcher.formData?.get("action") === "delete-data"
@@ -760,7 +747,9 @@ export default function Index() {
                   </s-button>
                   <s-button
                     onClick={handleDisconnect}
+                    variant="secondary"
                     tone="critical"
+                    icon="exit"
                     loading={
                       fetcher.state === "submitting" &&
                       fetcher.formData?.get("action") === "disconnect"
@@ -831,7 +820,11 @@ export default function Index() {
                 </s-banner>
 
                 <s-box>
-                  <s-button variant="primary" onClick={handleConnect}>
+                  <s-button
+                    tone="auto"
+                    variant="primary"
+                    onClick={handleConnect}
+                  >
                     Connect Instagram Account
                   </s-button>
                 </s-box>
@@ -937,6 +930,7 @@ export default function Index() {
                   <s-button
                     variant="primary"
                     onClick={handleDownloadThemeFiles}
+                    icon="download"
                   >
                     Download Horizon Files
                   </s-button>
@@ -1010,7 +1004,7 @@ export default function Index() {
           <s-card>
             <s-stack gap="base">
               <s-stack gap="small-200">
-                <s-heading>Design Settings</s-heading>
+                <s-heading>Design Settings preview</s-heading>
                 <s-text color="subdued">
                   Configure your Instagram feed appearance. Preview updates in
                   real-time.
@@ -1243,6 +1237,7 @@ export default function Index() {
                           previewDevice === "desktop" ? "primary" : undefined
                         }
                         onClick={() => setPreviewDevice("desktop")}
+                        icon="desktop"
                       >
                         Desktop
                       </s-button>
@@ -1251,6 +1246,7 @@ export default function Index() {
                           previewDevice === "mobile" ? "primary" : undefined
                         }
                         onClick={() => setPreviewDevice("mobile")}
+                        icon="mobile"
                       >
                         Mobile
                       </s-button>

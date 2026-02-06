@@ -16,13 +16,13 @@ import {
 
 /**
  * API endpoint to sync Instagram posts to Shopify
- * 
+ *
  * This endpoint:
  * 1. Fetches Instagram posts from the Graph API
  * 2. Uploads media files to Shopify
  * 3. Creates/updates metaobjects for each post
  * 4. Creates a list metaobject containing all posts
- * 
+ *
  * @returns Success status with username and display name, or error message
  */
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -104,7 +104,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   // Process each Instagram post
   for (const post of posts) {
     let fileIds: string[] = [];
-    
+
     // Check if this post already exists in Shopify
     const existingPost = await getExistingPost(admin, post.id, currentUsername);
 
@@ -137,7 +137,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       }
     } else {
       // New post - upload media files to Shopify first
-      
+
       if (post.media_type === "CAROUSEL_ALBUM" && post.children?.data) {
         // Handle carousel posts by uploading each child media item
         for (let i = 0; i < post.children.data.length; i++) {

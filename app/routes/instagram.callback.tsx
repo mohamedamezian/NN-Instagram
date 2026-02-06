@@ -64,10 +64,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     let instagramUsername: string | null = null;
     try {
       const meResponse = await fetch(
-        `https://graph.instagram.com/me?fields=id,username,account_type&access_token=${finalToken}`
+        `https://graph.instagram.com/me?fields=id,username,account_type&access_token=${finalToken}`,
       );
       const meData = await meResponse.json();
-      
+
       if (meData.id) {
         instagramBusinessAccountId = meData.id;
       }
@@ -75,7 +75,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         instagramUsername = meData.username;
       }
     } catch (meError) {
-      console.error("Failed to fetch Instagram Business Account info:", meError);
+      console.error(
+        "Failed to fetch Instagram Business Account info:",
+        meError,
+      );
     }
 
     // Update existing or create new Instagram token
